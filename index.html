@@ -1,0 +1,1021 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>BDSM Alchemy</title>
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <style>
+        /* Премиальная темная кибер-тема */
+        :root {
+            --bg-color: #03060a; 
+            --panel-bg: rgba(16, 21, 28, 0.85);
+            --text-main: #e0e0e0;
+            --text-muted: #6b7a8c;
+            --accent-neon: #ff5500;
+            --accent-glow: rgba(255, 85, 0, 0.6);
+            --rare-color: #00e5ff; 
+            --epic-color: #ff00ff; 
+            --legendary-color: #ffaa00;
+            --mythic-color: #ff0000;
+            --border-color: #1e2836;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            background-color: var(--bg-color); color: var(--text-main);
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            overflow: hidden; display: flex; flex-direction: column; height: 100vh; position: relative;
+            transition: background 1s ease;
+        }
+
+        /* --- СИСТЕМА ДИНАМИЧЕСКИХ ФОНОВ --- */
+        .bg-layer { position: absolute; top: 0; left: 0; right: 0; bottom: 0; z-index: -2; transition: opacity 1s; }
+        .bg-fx-layer { position: absolute; top: -50%; left: -50%; width: 200%; height: 200%; z-index: -1; pointer-events: none; transition: opacity 1s; }
+        
+        body.theme-default .bg-layer { background-image: linear-gradient(rgba(0, 229, 255, 0.05) 1px, transparent 1px), linear-gradient(90deg, rgba(0, 229, 255, 0.05) 1px, transparent 1px); background-size: 30px 30px; }
+        body.theme-default .bg-fx-layer { background: radial-gradient(circle at 50% 50%, rgba(255, 85, 0, 0.08) 0%, transparent 20%), radial-gradient(circle at 20% 80%, rgba(0, 229, 255, 0.05) 0%, transparent 20%); animation: gridScan 15s infinite linear; }
+        
+        body.theme-matrix .bg-layer { background: repeating-linear-gradient(0deg, #001100, #001100 2px, #000 2px, #000 4px); }
+        body.theme-matrix .bg-fx-layer { background: radial-gradient(circle, rgba(0,255,0,0.1) 0%, transparent 50%); animation: pulseBg 4s infinite alternate; }
+
+        body.theme-blood .bg-layer { background: radial-gradient(circle at center, #2a0000 0%, #000000 100%); }
+        body.theme-blood .bg-fx-layer { background: url('data:image/svg+xml;utf8,<svg opacity="0.05" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><path fill="%23ff0000" d="M0 0h100v100H0z"/></svg>'); mix-blend-mode: overlay; animation: breathBg 6s infinite alternate; }
+
+        body.theme-neon .bg-layer { background: linear-gradient(45deg, #09001a, #000814); }
+        body.theme-neon .bg-fx-layer { background: repeating-linear-gradient(45deg, transparent, transparent 10px, rgba(255,0,255,0.05) 10px, rgba(255,0,255,0.05) 20px); animation: gridScan 10s infinite linear reverse; }
+
+        body.theme-abyss .bg-layer { background: radial-gradient(circle at 50% 100%, #1a0033 0%, #000000 100%); }
+        body.theme-abyss .bg-fx-layer { background: repeating-radial-gradient(circle at 50% 50%, rgba(255,255,255,0.02) 0, rgba(255,255,255,0.02) 10px, transparent 10px, transparent 20px); animation: breathBg 8s infinite alternate; }
+
+        @keyframes gridScan { 0% { transform: translate(0, 0) rotate(0deg); } 100% { transform: translate(-10%, -10%) rotate(360deg); } }
+        @keyframes pulseBg { 0% { opacity: 0.5; } 100% { opacity: 1; } }
+        @keyframes breathBg { 0% { transform: scale(1); } 100% { transform: scale(1.05); } }
+
+        /* Шапка и Комикс-пузырь */
+        header {
+            display: flex; align-items: center; justify-content: space-between; padding: 15px 15px;
+            background: linear-gradient(180deg, rgba(10,10,12,0.95) 0%, transparent 100%);
+            border-bottom: 1px solid var(--border-color); backdrop-filter: blur(10px); z-index: 50; position: relative;
+        }
+
+        .mistress-container { position: relative; display: flex; align-items: center;}
+        .mistress-portrait { display: flex; align-items: center; gap: 10px; cursor: pointer; padding: 5px; border-radius: 30px; transition: background 0.2s; }
+        .mistress-portrait:active { background: rgba(255, 85, 0, 0.1); transform: scale(0.95); }
+
+        .mistress-avatar {
+            width: 44px; height: 44px; border-radius: 50%; background-color: #222;
+            border: 2px solid var(--accent-neon); display: flex; align-items: center;
+            justify-content: center; font-size: 24px; box-shadow: 0 0 10px var(--accent-glow);
+        }
+
+        .speech-bubble {
+            position: absolute; top: 60px; left: 10px; background: rgba(20,20,25,0.95); border: 1px solid var(--accent-neon);
+            border-radius: 12px; padding: 10px 15px; font-size: 11px; color: #fff; max-width: 250px;
+            box-shadow: 0 5px 15px rgba(255,85,0,0.3); opacity: 0; pointer-events: none; transition: opacity 0.3s, transform 0.3s;
+            transform: translateY(-10px); z-index: 60; font-style: italic; line-height: 1.4;
+        }
+        .speech-bubble.show { opacity: 1; transform: translateY(0); pointer-events: all;}
+        .speech-bubble::before {
+            content: ''; position: absolute; top: -6px; left: 20px; width: 10px; height: 10px;
+            background: rgba(20,20,25,0.95); border-top: 1px solid var(--accent-neon); border-left: 1px solid var(--accent-neon);
+            transform: rotate(45deg);
+        }
+
+        .header-right { display: flex; align-items: center; gap: 8px; }
+        .progress-container { display: flex; flex-direction: column; align-items: flex-end; margin-right: 5px; }
+        .progress-text { font-size: 11px; font-weight: bold; color: var(--text-main); text-transform: uppercase; }
+        .fails-text { font-size: 10px; color: #ff4444; }
+
+        .icon-btn {
+            background: var(--panel-bg); border: 1px solid var(--border-color); color: var(--text-main);
+            width: 32px; height: 32px; border-radius: 8px; display: flex; align-items: center;
+            justify-content: center; font-size: 15px; cursor: pointer; transition: all 0.2s;
+        }
+        .icon-btn:active { transform: scale(0.9); border-color: var(--accent-neon); color: var(--accent-neon); }
+
+        /* Круг Алхимии */
+        .crafting-section { padding: 30px 20px 10px; display: flex; flex-direction: column; align-items: center; gap: 20px; position: relative; z-index: 10; }
+        .slots-container { display: flex; gap: 8px; justify-content: center; width: 100%; max-width: 500px; position: relative; }
+        .slot { flex: 1; aspect-ratio: 1 / 1; max-width: 70px; background: var(--panel-bg); border: 1px dashed var(--border-color); border-radius: 8px; display: flex; flex-direction: column; align-items: center; justify-content: center; font-size: 24px; transition: all 0.3s; cursor: pointer; position: relative; overflow: visible; }
+        .slot-name { font-size: 8px; position: absolute; bottom: 4px; color: var(--text-muted); text-align: center; width: 100%; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; z-index: 5; }
+
+        .slot.state-1 { border: 1px solid var(--rare-color); box-shadow: 0 0 10px rgba(0, 229, 255, 0.3); background: #151b24; }
+        .slot.state-2 { border: 1px solid var(--accent-neon); box-shadow: 0 0 15px var(--accent-glow); animation: pulseState2 1.5s infinite alternate; background: #1a1614; }
+        .slot.state-3 { border: 1px solid var(--epic-color); box-shadow: 0 0 20px rgba(255, 0, 255, 0.5); animation: pulseState3 0.8s infinite alternate, shakeState3 2s infinite linear; background: #1c141c; }
+        .slot.state-4 { border: 1px solid var(--legendary-color); box-shadow: 0 0 25px rgba(255, 170, 0, 0.7); animation: pulseState4 0.4s infinite alternate, shakeState4 0.5s infinite linear; background: #241c10; }
+        .slot.state-5 { border: 2px solid var(--mythic-color); box-shadow: 0 0 40px rgba(255, 0, 0, 0.9), inset 0 0 20px rgba(255, 0, 0, 0.5); animation: pulseState5 0.1s infinite alternate, shakeState5 0.1s infinite linear; background: #2a0a0a; }
+
+        @keyframes pulseState2 { 100% { box-shadow: 0 0 25px var(--accent-glow), inset 0 0 10px var(--accent-glow); } }
+        @keyframes pulseState3 { 100% { box-shadow: 0 0 30px rgba(255,0,255,0.8), inset 0 0 15px rgba(255,0,255,0.4); } }
+        @keyframes pulseState4 { 100% { box-shadow: 0 0 35px rgba(255,170,0,1), inset 0 0 20px rgba(255,170,0,0.6); filter: hue-rotate(15deg); } }
+        @keyframes pulseState5 { 100% { box-shadow: 0 0 50px #ff0000, inset 0 0 30px #ff0000; filter: hue-rotate(30deg) brightness(1.5); } }
+        @keyframes shakeState3 { 0%, 100% { transform: translate(0, 0) rotate(0deg); } 25% { transform: translate(1px, 1px) rotate(1deg); } 50% { transform: translate(-1px, -1px) rotate(-1deg); } 75% { transform: translate(-1px, 1px) rotate(0deg); } }
+        @keyframes shakeState4 { 0%, 100% { transform: translate(0, 0); } 25% { transform: translate(2px, -2px); } 50% { transform: translate(-2px, 2px); } 75% { transform: translate(2px, 2px); } }
+        @keyframes shakeState5 { 0%, 100% { transform: translate(0, 0); } 25% { transform: translate(4px, -4px) scale(1.05); } 50% { transform: translate(-4px, 4px) scale(0.95); } 75% { transform: translate(4px, 4px) scale(1.1); } }
+
+        .stage-particle { position: absolute; width: 3px; height: 3px; border-radius: 50%; bottom: 5px; opacity: 0; pointer-events: none; z-index: 20; }
+        .state-2 .stage-particle { background: var(--accent-neon); box-shadow: 0 0 5px var(--accent-neon); animation: floatUp 1.5s infinite; }
+        .state-3 .stage-particle { background: var(--epic-color); box-shadow: 0 0 8px var(--epic-color); animation: floatUpFast 1s infinite; width: 4px; height: 4px; }
+        .state-4 .stage-particle { background: var(--legendary-color); box-shadow: 0 0 10px var(--legendary-color); animation: floatUpFast 0.6s infinite; width: 5px; height: 5px; }
+        
+        .sparks-container { position: absolute; width: 100%; height: 100%; top: 0; left: 0; pointer-events: none; }
+        .spark { position: absolute; top: 50%; left: 50%; width: 2px; height: 15px; background: #fff; transform-origin: center; opacity: 0; box-shadow: 0 0 10px #ff0000; }
+        .state-5 .spark:nth-child(1) { animation: shoot 0.3s infinite linear 0s; transform: translate(-50%, -50%) rotate(0deg); }
+        .state-5 .spark:nth-child(2) { animation: shoot 0.3s infinite linear 0.1s; transform: translate(-50%, -50%) rotate(72deg); }
+        .state-5 .spark:nth-child(3) { animation: shoot 0.3s infinite linear 0.2s; transform: translate(-50%, -50%) rotate(144deg); }
+        .state-5 .spark:nth-child(4) { animation: shoot 0.3s infinite linear 0.05s; transform: translate(-50%, -50%) rotate(216deg); }
+        .state-5 .spark:nth-child(5) { animation: shoot 0.3s infinite linear 0.15s; transform: translate(-50%, -50%) rotate(288deg); }
+
+        @keyframes floatUp { 0% { transform: translateY(0) scale(1); opacity: 1; } 100% { transform: translateY(-40px) scale(0.1); opacity: 0; } }
+        @keyframes floatUpFast { 0% { transform: translateY(0) scale(1); opacity: 1; } 100% { transform: translateY(-60px) scale(0); opacity: 0; } }
+        @keyframes shoot { 0% { transform: translateY(0) scaleY(1); opacity: 1; } 100% { transform: translateY(-50px) scaleY(0.2); opacity: 0; } }
+
+        .merge-btn {
+            background: rgba(10, 15, 20, 0.8); color: var(--accent-neon); border: 2px solid var(--accent-neon);
+            padding: 12px 50px; font-size: 16px; font-weight: bold; border-radius: 25px; cursor: pointer;
+            text-transform: uppercase; letter-spacing: 3px; transition: all 0.3s; box-shadow: 0 0 15px rgba(255, 85, 0, 0.3); backdrop-filter: blur(5px); z-index: 10;
+        }
+        .merge-btn:active { transform: scale(0.9); box-shadow: 0 0 30px rgba(255, 85, 0, 0.8); }
+        .merge-btn:disabled { border-color: #333; color: #555; box-shadow: none; cursor: not-allowed; background: transparent; }
+
+        /* Инвентарь */
+        .inventory-section {
+            flex: 1; background: var(--panel-bg); border-top-left-radius: 24px; border-top-right-radius: 24px;
+            padding: 20px; overflow-y: auto; border-top: 1px solid var(--border-color); backdrop-filter: blur(15px); z-index: 10;
+        }
+        .inventory-section::-webkit-scrollbar { width: 0px; }
+        .inventory-title { font-size: 11px; color: var(--text-muted); text-transform: uppercase; margin-bottom: 15px; letter-spacing: 1px; display: flex; justify-content: space-between; align-items: center;}
+        .inventory-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(70px, 1fr)); gap: 12px; }
+
+        .inv-item {
+            background: rgba(0,0,0,0.5); border: 1px solid var(--border-color); border-radius: 12px;
+            padding: 10px 5px; display: flex; flex-direction: column; align-items: center;
+            justify-content: center; cursor: pointer; transition: transform 0.1s; position: relative;
+        }
+        .inv-item:active { transform: scale(0.9); border-color: var(--accent-neon); }
+        .inv-icon { font-size: 28px; margin-bottom: 5px; position: relative; z-index: 2; text-shadow: 0 0 10px rgba(255,255,255,0.2); }
+        .inv-name { font-size: 9px; color: var(--text-main); text-align: center; word-break: break-word; position: relative; z-index: 2; line-height: 1.1;}
+
+        .inv-item.final-item { background: rgba(255, 255, 255, 0.05); border-color: #4a4a4a; box-shadow: inset 0 0 15px rgba(255,255,255,0.02); }
+        
+        /* Исчерпанные предметы (те, с которыми открыты все рецепты) */
+        .inv-item.exhausted-item { filter: grayscale(80%); opacity: 0.6; }
+        .inv-item.exhausted-item::after {
+            content: '✓'; position: absolute; top: 4px; right: 6px;
+            color: #00ff00; font-size: 12px; text-shadow: 0 0 3px #000; font-weight: bold;
+        }
+
+        .rarity-0 { border-color: #444; }
+        .rarity-2 { border-color: var(--rare-color); box-shadow: inset 0 0 8px rgba(0, 229, 255, 0.1); }
+        .rarity-3 { border-color: var(--epic-color); box-shadow: inset 0 0 12px rgba(255, 0, 255, 0.15); }
+        .rarity-4 { border-color: var(--legendary-color); box-shadow: inset 0 0 15px rgba(255, 170, 0, 0.2); }
+        .rarity-5 { border-color: var(--mythic-color); box-shadow: inset 0 0 20px rgba(255, 0, 0, 0.3); }
+        .rarity-mistress { border-color: #ff00ff; box-shadow: 0 0 15px rgba(255,0,255,0.4), inset 0 0 15px rgba(255,0,255,0.2); }
+
+        /* Модальные окна */
+        .modal-overlay {
+            position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0, 0, 0, 0.9);
+            backdrop-filter: blur(8px); display: flex; align-items: center; justify-content: center;
+            z-index: 200; opacity: 0; pointer-events: none; transition: opacity 0.3s;
+        }
+        .modal-overlay.active { opacity: 1; pointer-events: all; }
+        .modal-content {
+            background: var(--bg-color); border: 1px solid var(--accent-neon); border-radius: 16px;
+            width: 85%; max-width: 400px; padding: 25px 20px; text-align: center;
+            box-shadow: 0 0 40px rgba(255, 85, 0, 0.2); transform: translateY(20px); transition: transform 0.3s;
+            position: relative; overflow: hidden; display: flex; flex-direction: column;
+        }
+        .modal-overlay.active .modal-content { transform: translateY(0); }
+        
+        .modal-content::before { content: ''; position: absolute; top: -50%; left: -50%; width: 200%; height: 200%; background: radial-gradient(circle, rgba(255,85,0,0.1) 0%, transparent 60%); z-index: 0; pointer-events: none; }
+
+        .epic-title { color: var(--accent-neon); font-size: 22px; text-transform: uppercase; letter-spacing: 2px; margin-bottom: 15px; position: relative; z-index: 1;}
+        .epic-art { font-size: 60px; margin: 10px 0 20px; display: flex; align-items: center; justify-content: center; position: relative; z-index: 1; text-shadow: 0 0 30px var(--accent-glow); animation: floatUpFast 3s infinite alternate ease-in-out;}
+        
+        .item-desc { font-size: 12px; color: #ddd; margin-bottom: 15px; position: relative; z-index: 1; line-height: 1.5; background: rgba(0,0,0,0.4); padding: 12px; border-radius: 8px; border-left: 2px solid var(--legendary-color); text-align: left; }
+        .mistress-quote { font-style: italic; color: #fff; margin-bottom: 25px; line-height: 1.4; font-size: 13px; border-left: 2px solid var(--accent-neon); padding-left: 10px; text-align: left; position: relative; z-index: 1; background: rgba(0,0,0,0.6); padding: 10px; border-radius: 0 8px 8px 0;}
+        
+        .close-modal-btn { background: var(--accent-neon); color: #000; border: none; padding: 12px 35px; margin-top: auto; border-radius: 25px; font-weight: bold; font-size: 14px; cursor: pointer; text-transform: uppercase; position: relative; z-index: 1; box-shadow: 0 0 15px var(--accent-glow); }
+
+        .modal-content.large { max-width: 450px; width: 95%; max-height: 85vh; padding: 20px 15px; }
+        .modal-scroll-area { flex: 1; overflow-y: auto; display: flex; flex-direction: column; gap: 10px; margin-bottom: 10px; padding-right: 5px; text-align: left; position: relative; z-index: 1;}
+        .modal-scroll-area::-webkit-scrollbar { width: 4px; }
+        .modal-scroll-area::-webkit-scrollbar-thumb { background: var(--accent-neon); border-radius: 4px; }
+
+        .list-item { background: rgba(0,0,0,0.6); border: 1px solid var(--border-color); border-radius: 12px; padding: 12px; display: flex; gap: 15px; align-items: center; transition: border 0.2s; }
+        .list-icon { font-size: 30px; min-width: 40px; text-align: center; }
+        .list-info { flex: 1; }
+        .list-name { font-size: 14px; font-weight: bold; color: var(--text-main); margin-bottom: 4px; }
+        .list-desc { font-size: 11px; color: #a0a0a0; line-height: 1.3; }
+
+        .collection-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(75px, 1fr)); gap: 10px; position: relative; z-index: 1; overflow-y: auto; padding-right: 5px; }
+        .recipe-box { background: rgba(0,0,0,0.4); border: 1px solid #333; border-radius: 8px; padding: 10px; margin-bottom: 20px; font-size: 12px; position: relative; z-index: 1; }
+        .recipe-box-title { color: var(--accent-neon); font-size: 10px; text-transform: uppercase; margin-bottom: 5px; }
+        .recipe-combo { display: flex; align-items: center; justify-content: center; gap: 5px; flex-wrap: wrap; }
+        .recipe-item { display: inline-flex; align-items: center; gap: 3px; background: #111; padding: 4px 8px; border-radius: 6px; border: 1px solid #222; }
+
+        .settings-section-title { font-size: 12px; color: var(--accent-neon); text-transform: uppercase; margin: 15px 0 5px; border-bottom: 1px solid #333; padding-bottom: 5px;}
+        .toggle-row { display: flex; justify-content: space-between; align-items: center; background: rgba(0,0,0,0.4); padding: 10px; border-radius: 8px; margin-bottom: 5px;}
+        .toggle-label { font-size: 12px; color: #ccc;}
+        .toggle-desc { font-size: 9px; color: #777; margin-top:2px;}
+        
+        .switch { position: relative; display: inline-block; width: 40px; height: 20px; }
+        .switch input { opacity: 0; width: 0; height: 0; }
+        .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #333; transition: .4s; border-radius: 20px; }
+        .slider:before { position: absolute; content: ""; height: 14px; width: 14px; left: 3px; bottom: 3px; background-color: white; transition: .4s; border-radius: 50%; }
+        input:checked + .slider { background-color: var(--accent-neon); }
+        input:checked + .slider:before { transform: translateX(20px); }
+
+        .toast { position: fixed; bottom: -60px; left: 50%; transform: translateX(-50%); background: rgba(10, 15, 20, 0.95); color: var(--text-main); padding: 12px 24px; border-radius: 20px; border: 1px solid var(--border-color); font-size: 14px; z-index: 1000; opacity: 0; transition: all 0.4s; pointer-events: none; box-shadow: 0 10px 30px rgba(0,0,0,0.8); white-space: nowrap; display: flex; align-items: center; gap: 10px; }
+        .toast.show { bottom: 30px; opacity: 1; }
+        .toast.achievement { border-color: var(--legendary-color); box-shadow: 0 0 20px rgba(255, 170, 0, 0.4); color: var(--legendary-color); font-weight: bold;}
+
+        .merge-blast { position: fixed; transform: translate(-50%, -50%); border-radius: 50%; pointer-events: none; z-index: 100; mix-blend-mode: screen;}
+        @keyframes blastAnim { 0% { width: 0; height: 0; opacity: 1; } 100% { width: 100vw; height: 100vw; opacity: 0; } }
+    </style>
+</head>
+<body class="theme-default" id="app-body">
+    <div class="bg-layer"></div>
+    <div class="bg-fx-layer"></div>
+
+    <header>
+        <div class="mistress-container">
+            <div class="mistress-portrait" onclick="openWardrobeMenu()">
+                <div class="mistress-avatar" id="header-mistress-avatar">👑</div>
+                <div>
+                    <div style="font-size: 14px; font-weight: bold; text-shadow: 0 0 5px var(--accent-glow);" id="header-mistress-name">БДСМ-ка</div>
+                    <div style="font-size: 11px; color: var(--text-muted);">Гардероб & Настройки</div>
+                </div>
+            </div>
+            <!-- Комикс-пузырь -->
+            <div class="speech-bubble" id="speech-bubble">Я жду твоих действий.</div>
+        </div>
+        
+        <div class="header-right">
+            <div class="progress-container">
+                <div class="progress-text" id="progress-text">0 / 0</div>
+                <div class="fails-text" id="fails-text">Ошибок: 0</div>
+            </div>
+            <button class="icon-btn" onclick="openAchievementsMenu()">🏆</button>
+            <button class="icon-btn" onclick="openCollectionMenu()">📖</button>
+        </div>
+    </header>
+
+    <main class="crafting-section">
+        <div class="slots-container">
+            <div class="slot" id="slot1" onclick="clearSlot(1)"></div>
+            <div class="slot" id="slot2" onclick="clearSlot(2)"></div>
+            <div class="slot" id="slot3" onclick="clearSlot(3)"></div>
+            <div class="slot" id="slot4" onclick="clearSlot(4)"></div>
+            <div class="slot" id="slot5" onclick="clearSlot(5)"></div>
+        </div>
+        <button class="merge-btn" id="merge-btn" onclick="attemptMerge()" disabled>Слияние</button>
+    </main>
+
+    <section class="inventory-section">
+        <div class="inventory-title">
+            <span>Инвентарь</span>
+            <span style="font-size: 10px; cursor: pointer; color: var(--accent-neon);" onclick="clearAllSlots()">Очистить круг ❌</span>
+        </div>
+        <div class="inventory-grid" id="inventory-grid"></div>
+    </section>
+
+    <!-- Окно Открытия / Досье -->
+    <div class="modal-overlay" id="epic-modal">
+        <div class="modal-content">
+            <div class="epic-title" id="modal-title">Открытие!</div>
+            <div class="epic-art" id="modal-icon">✨</div>
+            <div class="item-desc" id="modal-desc">Горячее описание...</div>
+            <div class="recipe-box" id="modal-recipe-box" style="display: none;">
+                <div class="recipe-box-title">Рецепт:</div>
+                <div class="recipe-combo" id="modal-recipe-combo"></div>
+            </div>
+            <div class="mistress-quote" id="modal-quote">"Служи мне."</div>
+            <button class="close-modal-btn" onclick="closeModal('epic-modal')">Понятно</button>
+        </div>
+    </div>
+
+    <!-- Окно Списков / Настроек -->
+    <div class="modal-overlay" id="list-modal">
+        <div class="modal-content large">
+            <div class="epic-title" id="list-modal-title">Список</div>
+            <div class="modal-scroll-area" id="list-modal-content"></div>
+            <button class="close-modal-btn" onclick="closeModal('list-modal')">Закрыть</button>
+        </div>
+    </div>
+
+    <div id="toast" class="toast"></div>
+
+    <script>
+        const tg = window.Telegram.WebApp;
+        tg.expand();
+        const API_URL = 'http://127.0.0.1:8080/api'; 
+        const userId = tg.initDataUnsafe?.user?.id || 1; 
+
+        let allItems = [];
+        let unlockedItemIds = [];
+        let unlockedAchievements = [];
+        let exhaustedItemIds = [];
+        let activeSlots = [null, null, null, null, null]; 
+        
+        let settings = {
+            currentMistressId: "bdsm_default",
+            currentTheme: "theme-default",
+            showFinals: true,
+            showExhausted: true,
+            enableVoice: true,
+            unlockedBgs: ["theme-default"],
+            failedAttempts: 0
+        };
+
+        let idleTimer = null;
+        let bubbleTimer = null;
+
+        // Фоны меню
+        const backgroundsDb = [
+            { id: "theme-default", name: "Базовый Скан", icon: "🌐", req: 0, desc: "Доступно изначально." },
+            { id: "theme-matrix", name: "Матрица Подчинения", icon: "🟩", req: 15, desc: "Открывается при 15 элементах." },
+            { id: "theme-blood", name: "Кровавый Бархат", icon: "🩸", req: 30, desc: "Открывается при 30 элементах." },
+            { id: "theme-neon", name: "Неоновый Кибер", icon: "🎆", req: 55, desc: "Открывается при 55 элементах." },
+            { id: "theme-abyss", name: "Бездна Порока", icon: "🌌", req: 75, desc: "Открывается при 75 элементах." }
+        ];
+
+        // --- МАСШТАБНАЯ БАЗА ДАННЫХ ---
+        const defaultItems = [
+            // Базовые элементы
+            { id: "leather", name: "Кожа", icon: "🖤", recipe: [], desc: "Плотный материал. Основа связывающих инструментов." },
+            { id: "sub", name: "Нижний", icon: "🧍", recipe: [], desc: "Покорное тело и разум. Главный ресурс." },
+            { id: "metal", name: "Металл", icon: "⛓️", recipe: [], desc: "Холодный, тяжелый и непреклонный." },
+            { id: "love", name: "Любовь", icon: "❤️", recipe: [], desc: "Абсолютное доверие и привязанность." },
+            { id: "plastic", name: "Пластик", icon: "🧊", recipe: [], desc: "Гладкая синтетика." },
+            { id: "ass", name: "Попка", icon: "🍑", recipe: [], desc: "Мягкая, беззащитная зона, ждущая заполнения или удара." },
+            { id: "electricity", name: "Электричество", icon: "⚡", recipe: [], desc: "Энергия, заставляющая мышцы сокращаться против воли." },
+            { id: "water", name: "Вода", icon: "💧", recipe: [], desc: "Смывает следы, очищает изнутри." },
+            { id: "tenderness", name: "Нежность", icon: "🌸", recipe: [], desc: "Редкая, но самая желанная награда." },
+
+            // БДСМ-КИ
+            { id: "bdsm_default", name: "Базовая БДСМ-ка", icon: "👩‍💼", recipe: [], type: "mistress", personality: "default", req: 0, desc: "Классическая Наставница. Справедливая, требовательная, но не впадающая в крайности. Идеальный баланс." },
+            { id: "bdsm_gentle", name: "Нежная БДСМ-ка", icon: "🧚‍♀️", recipe: [], type: "mistress", personality: "gentle", req: 20, desc: "Любит похвалу, афтеркеа и мягкий контроль. Заставит тебя плакать от переизбытка чувств и ласки." },
+            { id: "bdsm_strict", name: "Строгая БДСМ-ка", icon: "🦸‍♀️", recipe: [], type: "mistress", personality: "strict", req: 40, desc: "Садистка. Питается твоими слезами, унижает и требует абсолютного подчинения. Никакой жалости." },
+            { id: "bdsm_ai", name: "ИИ БДСМ-ка", icon: "🤖", recipe: [], type: "mistress", personality: "strict", req: 60, desc: "Нейросеть, обученная максимизировать твою покорность через точный расчет болевых порогов и электростимуляцию." },
+            { id: "bdsm_latex", name: "Латексная БДСМ-ка", icon: "👩‍🎤", recipe: [], type: "mistress", personality: "strict", req: 80, desc: "Закована в блестящий черный латекс. Обожает сенсорную депривацию, вакуумные кровати и полный контроль дыхания." },
+
+            // Тупики/Связки
+            { id: "blindfold", name: "Повязка на глаза", icon: "🙈", recipe: [["leather", "strictness"]], desc: "Плотно облегает глаза, погружая во тьму." },
+            { id: "leash", name: "Поводок", icon: "🔗", recipe: [["collar", "bdsm_default"], ["collar", "metal"]], desc: "Прочный ремень. Натяжение означает приказ." },
+            { id: "birch", name: "Розги", icon: "🌾", recipe: [["crop", "strictness"]], desc: "Тонкие прутья, рассекающие воздух со свистом." },
+            { id: "puppy_mask", name: "Маска щенка", icon: "🐶", recipe: [["leather", "good_sub"]], desc: "Шлем, стирающий человеческую личность." },
+            { id: "ice_shower", name: "Ледяной душ", icon: "🚿", recipe: [["water", "pain"]], desc: "Обжигающий холод по разгоряченной коже." },
+            { id: "points_system", name: "Система баллов", icon: "📊", recipe: [["strictness", "upbringing"]], desc: "Абсолютный математический учет проступков." },
+            { id: "acceptance_of_pain", name: "Принятие боли", icon: "🧘", recipe: [["masochism", "obedience"]], desc: "Полное смирение перед страданиями." },
+            { id: "catharsis", name: "Катарсис", icon: "🕊️", recipe: [["tears", "pain"]], desc: "Очищение души через телесные муки." },
+            { id: "discipline", name: "Дисциплина", icon: "📐", recipe: [["strictness", "upbringing"], ["pain", "upbringing"]], desc: "Идеальная осанка и выполнение команд." },
+            { id: "breakdown", name: "Срыв", icon: "💥", recipe: [["long_abstinence", "vibrator"]], desc: "Потеря контроля после долгого запрета." },
+
+            // Основные крафты (Рецепты из Промта)
+            { id: "gag", name: "Кляп", icon: "🤐", recipe: [["leather", "metal"]], desc: "Глубоко вдавливается в рот, мешая сглотнуть слюну." },
+            { id: "leather_bodysuit", name: "Кожаный бодисьют", icon: "🩱", recipe: [["leather", "sub"]], desc: "Тяжелая кожа плотно облегает тело." },
+            { id: "chastity_belt", name: "Пояс верности", icon: "🔒", recipe: [["sub", "metal"]], desc: "Металлическая клетка, запирающая самое сокровенное." },
+            { id: "pleasure", name: "Наслаждение", icon: "✨", recipe: [["sub", "love"]], desc: "Волна тепла, разливающаяся по телу." },
+            { id: "plastic_chastity", name: "Пластиковый пояс верности", icon: "🩲", recipe: [["sub", "plastic"]], desc: "Прозрачная, унизительная клетка." },
+            { id: "pain", name: "Боль", icon: "🩸", recipe: [["love", "strictness"], ["sub", "crop", "bdsm_default"]], desc: "Острый, пронзающий нервы сигнал." },
+            { id: "vibrator", name: "Вибратор", icon: "🪄", recipe: [["metal", "plastic"]], desc: "Мощный мотор, скрытый в пластике." },
+            { id: "strictness", name: "Строгость", icon: "📏", recipe: [["metal", "love"]], desc: "Холодные правила и абсолютная дисциплина." },
+            { id: "metal_plug", name: "Металлическая пробка", icon: "🔌", recipe: [["metal", "sub", "ass"]], desc: "Тяжелая, гладкая и ледяная." },
+            { id: "phallus", name: "Фалос", icon: "🍆", recipe: [["love", "plastic"]], desc: "Крупная синтетическая игрушка." },
+            { id: "orgasm", name: "Оргазм", icon: "🎆", recipe: [["chastity_belt", "pleasure", "vibrator"], ["vibrator", "chastity_belt"], ["obedience", "good_sub"]], desc: "Вспышка разрядки, затуманивающая разум." },
+            { id: "torture", name: "Пытка", icon: "🔥", recipe: [["vibrator", "pain"], ["imprisonment", "pain"]], desc: "Методичное доведение до грани." },
+            { id: "ruined_orgasm", name: "Разрушенный оргазм", icon: "🥀", recipe: [["vibrator", "strictness"], ["orgasm", "strictness"]], desc: "Резкая остановка стимуляции за долю секунды до разрядки." },
+            { id: "hitech_suit", name: "High-Tech костюм", icon: "🦾", recipe: [["leather_bodysuit", "vibrator", "metal", "plastic", "electricity"]], desc: "Костюм с датчиками пульса и встроенными вибраторами." },
+            { id: "hyper_orgasm", name: "Гипероргазм", icon: "🤯", recipe: [["vibrator", "electro_stimulator", "metal_plug", "pain", "orgasm"]], desc: "Многократная разрядка, вызванная перегрузкой." },
+            { id: "mind_break", name: "Слом разума", icon: "🤯💥", recipe: [["mindfuck", "pain"], ["quietness", "deprivation_chamber", "electric_torture", "orgasm", "latex"]], desc: "Личность перестает сопротивляться и полностью подчиняется." },
+            { id: "complete_personality_collapse", name: "Полный распад", icon: "💀", recipe: [["mind_break", "sensory_overload", "imprisonment", "electric_torture", "hypersensitivity"]], desc: "Эго уничтожено, остались только рефлексы." },
+
+            // Специфичные вещи из промта (Новые)
+            { id: "silent_plea", name: "Немая мольба", icon: "🙊", recipe: [["mouth_lock_mask", "whimper", "tears", "pain"]], desc: "Ты умоляешь глазами, не в силах произнести ни звука." },
+            { id: "blind_and_mute", name: "Слепой и немой", icon: "🫥", recipe: [["mouth_lock_mask", "blindfold", "sensory_deprivation", "punishment", "collar"]], desc: "Полное отключение от внешнего мира. Только внутренние ощущения." },
+            { id: "panic", name: "Паника", icon: "🙀", recipe: [["water_torture", "lack_of_breath"]], desc: "Животный страх за свою жизнь." },
+            { id: "drowning", name: "Утопление", icon: "🌊💀", recipe: [["water_torture", "pain"]], desc: "Вода заполняет легкие, не оставляя шанса." },
+            { id: "ice_torture", name: "Ледяная пытка", icon: "🧊🥶", recipe: [["water_torture", "ice_shower"]], desc: "Холод, обжигающий как огонь." },
+            { id: "deprivation_bath", name: "Депривационная ванна", icon: "🛁", recipe: [["water_torture", "sensory_deprivation", "deprivation_chamber"]], desc: "Теплая соленая вода. Растворение в пустоте." },
+            { id: "survival_instinct", name: "Инстинкт выживания", icon: "🫀", recipe: [["water_torture", "gag", "slavery_contract", "panic", "tears"]], desc: "Тело борется за жизнь вопреки приказам." },
+            { id: "pain_threshold", name: "Болевой порог", icon: "📈", recipe: [["control", "pain"]], desc: "Грань между терпением и криком." },
+            { id: "exceeding_pain_threshold", name: "Превышение порога", icon: "🚀", recipe: [["control", "burning_pain"]], desc: "Выход за пределы возможного." },
+            { id: "obedient_boy", name: "Послушный мальчик", icon: "👦", recipe: [["control", "femboy"], ["ruined_orgasm", "cunnilingus"]], desc: "Заслужил похвалу." },
+            { id: "femboy", name: "Фембойчик", icon: "🎀", recipe: [["plastic_chastity", "sub", "love"], ["control", "obedient_boy", "tenderness"]], desc: "Милый и очень послушный." },
+            { id: "lube", name: "Смазка", icon: "🧴", recipe: [["control", "metal_plug"], ["control", "plastic_plug"]], desc: "Скольжение — это важно." },
+            { id: "milking", name: "Дойка", icon: "🍼", recipe: [["control", "prostate_orgasm"]], desc: "Опустошение до последней капли." },
+            { id: "tongue", name: "Язык", icon: "👅", recipe: [["control", "cunnilingus"], ["obedience", "mouth_gag"]], desc: "Рабочий инструмент." },
+            { id: "mistress_orgasm", name: "Оргазм БДСМ-ки", icon: "✨", recipe: [["control", "cunnilingus", "bdsm_default"], ["bdsm_default", "cunnilingus", "tongue", "sub"]], desc: "Твоя главная цель выполнена." },
+            { id: "material_use", name: "Использование материала", icon: "♻️", recipe: [["control", "under_ai_control"]], desc: "Оптимизация ресурса (тебя)." },
+            { id: "obsession", name: "Одержимость", icon: "😵‍💫", recipe: [["obedience", "love"]], desc: "Не можешь думать ни о ком другом." },
+            { id: "orgasm_refusal", name: "Отказ от оргазма", icon: "🙅", recipe: [["obedience", "chastity_belt"]], desc: "Добровольное лишение." },
+            { id: "orgasm_demo", name: "Демонстрация оргазма", icon: "🎦", recipe: [["obedience", "orgasm"]], desc: "На камеру или перед зрителями." },
+            { id: "swallowing", name: "Сглатывание", icon: "🧃", recipe: [["obedience", "spit"]], desc: "Не пророни ни капли." },
+            { id: "bdsm", name: "БДСМ", icon: "🖤⛓️", recipe: [["bdsm_default", "love"]], desc: "Стиль жизни." },
+            { id: "strap_on", name: "Страпон", icon: "🍆", recipe: [["bdsm_default", "strictness", "enema"]], desc: "Её инструмент." },
+            { id: "facesitting", name: "Сесть на лицо", icon: "🪑", recipe: [["bdsm_default", "cunnilingus", "breath_control"]], desc: "Задыхаться под Её весом." },
+            { id: "kiss", name: "Поцелуй", icon: "💋", recipe: [["drool", "love"]], desc: "Долгожданный контакт губ." },
+            { id: "embarrassment", name: "Смущение", icon: "😳", recipe: [["phallus", "sub"]], desc: "Осознание своей уязвимости." },
+            { id: "ouch", name: "Ауч!", icon: "🤕", recipe: [["sub", "pain"]], desc: "Резкая реакция." },
+            { id: "ah_stop", name: "Ааа! Хватит...", icon: "😫", recipe: [["sub", "pain", "pain"]], desc: "Умоляешь остановиться." },
+            { id: "cant_take_it", name: "Я больше...", icon: "😭", recipe: [["sub", "pain", "pain", "pain"]], desc: "Слезы текут ручьем." },
+            { id: "loss_of_consciousness", name: "Потеря сознания", icon: "😵", recipe: [["sub", "pain", "pain", "pain", "pain"], ["pain_threshold", "exceeding_pain_threshold"]], desc: "Организм отключился." }
+        ];
+
+        // Оставшиеся предметы из старого массива, добавляем автоматически
+        const extraNames = [
+            { id: "nipple_clamps", name: "Зажимы для сосков", icon: "🗜️", recipe: [["metal", "pain"]] },
+            { id: "vacuum_bed", name: "Вакуумная кровать", icon: "🛏️", recipe: [["metal", "latex_doll"]] },
+            { id: "plastic_plug", name: "Пластиковая пробка", icon: "💎", recipe: [["plastic", "sub", "ass"]] },
+            { id: "latex", name: "Латекс", icon: "🧤", recipe: [["plastic", "sub", "love"]] },
+            { id: "deprivation_suit", name: "Депривационный костюм", icon: "🥷", recipe: [["leather_bodysuit", "leather"]] },
+            { id: "sex_slave", name: "Секс раб", icon: "⛓️‍💥", recipe: [["leather_bodysuit", "sub"]] },
+            { id: "silence", name: "Молчание", icon: "😶", recipe: [["gag", "sub"], ["quietness", "sub"]] },
+            { id: "plastic_gag", name: "Пластиковый кляп", icon: "🎾", recipe: [["gag", "plastic"]] },
+            { id: "quietness", name: "Тишина", icon: "🔇", recipe: [["gag", "moans"], ["control", "gag"]] },
+            { id: "metal_chastity", name: "Металлический пояс верности", icon: "⛓️", recipe: [["chastity_belt", "metal"]] },
+            { id: "negative_chastity", name: "Отрицательный пояс верности", icon: "📉", recipe: [["chastity_belt", "metal", "sub"]] },
+            { id: "electro_chastity", name: "Электро-пояс верности", icon: "⚡", recipe: [["chastity_belt", "electricity", "metal"]] },
+            { id: "spiked_chastity", name: "Пояс верности с шипами", icon: "🦔", recipe: [["metal_chastity", "strictness", "pain"]] },
+            { id: "docility", name: "Покорность", icon: "🙇", recipe: [["vibrator", "sub", "orgasm"], ["torture", "control"]] },
+            { id: "control", name: "Контроль", icon: "🎛️", recipe: [["vibrator", "crop"], ["quietness", "obedience"]] },
+            { id: "orgasm_torture", name: "Пытка оргазмом", icon: "🌋", recipe: [["vibrator", "torture", "orgasm"]] },
+            { id: "obedience", name: "Повиновение", icon: "🧎", recipe: [["vibrator", "ruined_orgasm"], ["strictness", "sub"]] },
+            { id: "electro_stimulator", name: "Электростимулятор", icon: "🔋", recipe: [["vibrator", "electricity", "pain"]] },
+            { id: "deprivation_chamber", name: "Камера депривации", icon: "📦", recipe: [["vibrator", "hitech_suit", "sub", "strictness"], ["imprisonment", "quietness"]] },
+            { id: "punishment", name: "Наказание", icon: "⚖️", recipe: [["vibrator", "orgasm", "strictness"], ["torture", "chastity_belt"], ["ruined_orgasm", "sub"], ["spanking", "sub"]] },
+            { id: "vibrating_plug", name: "Пробка с вибрацией", icon: "📳", recipe: [["vibrator", "metal_plug"], ["plastic_plug", "vibrator"]] },
+            { id: "vibro_strapon", name: "Вибрострапон", icon: "🍆⚡", recipe: [["vibrator", "strap_on"], ["bdsm_strict", "vibrator"]] },
+            { id: "drool", name: "Слюни", icon: "🤤", recipe: [["strictness", "gag"]] },
+            { id: "orgasm_control", name: "Контроль оргазма", icon: "🛑", recipe: [["strictness", "chastity_belt"], ["torture", "orgasm"]] },
+            { id: "orgasm_denial", name: "Запрет оргазма", icon: "🚫", recipe: [["strictness", "orgasm_control", "bdsm_default"], ["control", "seed"]] },
+            { id: "spit", name: "Плевок", icon: "💦", recipe: [["strictness", "bdsm_default", "drool"], ["torture", "drool"]] },
+            { id: "spanking", name: "Порка", icon: "👏", recipe: [["strictness", "pain"], ["punishment", "crop"]] },
+            { id: "large_plug", name: "Большая пробка", icon: "🏺", recipe: [["strictness", "metal_plug"]] },
+            { id: "latex_encasement", name: "Заключение в латекс", icon: "🕴️", recipe: [["strictness", "latex", "sub"]] },
+            { id: "whip", name: "Плеть", icon: "💥", recipe: [["crop", "leather"]] },
+            { id: "burning_pain", name: "Жгучая боль", icon: "☄️", recipe: [["crop", "spanking", "latex_encasement", "sub"]] },
+            { id: "upbringing", name: "Воспитание", icon: "🎓", recipe: [["crop", "femboy"], ["torture", "punishment"]] },
+            { id: "good_sub", name: "Хороший нижний", icon: "🐶", recipe: [["crop", "docility"]] },
+            { id: "tears", name: "Слёзы", icon: "😢", recipe: [["crop", "pain"], ["punishment", "pain"]] },
+            { id: "electro_shocker", name: "Электрошокер", icon: "⚡🦯", recipe: [["crop", "electricity"]] },
+            { id: "bdsm_session", name: "БДСМ Сессия", icon: "🎬", recipe: [["torture", "sub", "bdsm_default"], ["bdsm_room", "bdsm_default", "sub"]] },
+            { id: "moans", name: "Стоны", icon: "😫", recipe: [["torture", "sub"], ["torture", "pain"]] },
+            { id: "sadism", name: "Садизм", icon: "😈", recipe: [["torture", "love"]] },
+            { id: "mouth_gag", name: "Расширитель для рта", icon: "😬", recipe: [["torture", "gag"]] },
+            { id: "masochism", name: "Мазохизм", icon: "🩸", recipe: [["torture", "pleasure"], ["bdsm", "pain"]] },
+            { id: "temptation", name: "Искушение", icon: "🍎", recipe: [["torture", "pleasure", "bdsm_default"]] },
+            { id: "disappointment", name: "Разочарование", icon: "😞", recipe: [["torture", "ruined_orgasm"]] },
+            { id: "compliance", name: "Послушание", icon: "🫡", recipe: [["torture", "obedience"], ["quietness", "strictness"]] },
+            { id: "prostate_orgasm", name: "Оргазм простаты", icon: "🎯", recipe: [["torture", "vibrating_plug", "sub"]] },
+            { id: "cunnilingus", name: "Куни", icon: "👅", recipe: [["torture", "bdsm_default", "drool"], ["obedience", "tongue", "bdsm_default"]] },
+            { id: "enema", name: "Клизма", icon: "💉", recipe: [["torture", "plastic_plug", "water", "sub", "upbringing"]] },
+            { id: "breath_control", name: "Контроль дыхания", icon: "😮‍💨", recipe: [["torture", "latex"]] },
+            { id: "hypersensitivity", name: "Гиперчувствительность", icon: "✨", recipe: [["torture", "electro_stimulator"]] },
+            { id: "spit_in_mouth", name: "Плевки в рот", icon: "👄", recipe: [["torture", "spit", "bdsm_default"], ["spit", "drool"]] },
+            { id: "loss_of_control", name: "Потеря контроля", icon: "🎢", recipe: [["torture", "temptation"], ["remote_vibrator", "orgasm"]] },
+            { id: "breath_deprivation_mask", name: "Маска дых. депривации", icon: "🤿", recipe: [["torture", "breath_control", "latex"]] },
+            { id: "mockery", name: "Насмешка", icon: "🤡", recipe: [["ruined_orgasm", "tears", "bdsm_default"]] },
+            { id: "electric_torture", name: "Пытка током", icon: "🔌", recipe: [["ruined_orgasm", "electricity"], ["electro_shocker", "pain"]] },
+            { id: "robo_session", name: "Робо-сессия", icon: "🤖", recipe: [["ruined_orgasm", "hitech_suit"], ["bdsm_ai", "control"]] },
+            { id: "imprisonment", name: "Заточение", icon: "⛓️", recipe: [["ruined_orgasm", "deprivation_chamber"], ["bdsm_room", "quietness"]] },
+            { id: "seed", name: "Семя", icon: "🥛", recipe: [["ruined_orgasm", "orgasm"]] },
+            { id: "latex_doll", name: "Латексная кукла", icon: "🎎", recipe: [["ruined_orgasm", "punishment", "latex_encasement"]] },
+            { id: "slap", name: "Пощёчина", icon: "🤚", recipe: [["ruined_orgasm", "pain"]] },
+            { id: "prostate_fluid", name: "Жидкость простаты", icon: "💧", recipe: [["ruined_orgasm", "prostate_orgasm"]] },
+            { id: "humiliation", name: "Унижение", icon: "📉", recipe: [["ruined_orgasm", "spit_in_mouth", "bdsm_default"]] },
+            { id: "lack_of_breath", name: "Нехватка дыхания", icon: "😵", recipe: [["ruined_orgasm", "breath_deprivation_mask"]] },
+            { id: "plaything", name: "Вещь для утех", icon: "🧸", recipe: [["ruined_orgasm", "latex_doll"]] },
+            { id: "submissive", name: "Сабмессив", icon: "🧎‍♂️", recipe: [["control", "sub"], ["slavery_contract", "plaything"]] },
+            { id: "relationship", name: "Отношения", icon: "💍", recipe: [["control", "love"], ["bdsm", "love"]] },
+            { id: "locktober", name: "Локтобер", icon: "🗓️", recipe: [["control", "chastity_belt"], ["submissive", "chastity_belt"]] },
+            { id: "remote_vibrator", name: "Дистанц. вибратор", icon: "📱", recipe: [["control", "vibrating_plug"], ["control", "vibrator"]] },
+            { id: "collar", name: "Ошейник", icon: "🐕", recipe: [["control", "obedience"]] },
+            { id: "headphones", name: "Наушники", icon: "🎧", recipe: [["control", "quietness"]] },
+            { id: "under_ai_control", name: "Во власти ИИ", icon: "👁️", recipe: [["control", "robo_session", "bdsm_default"]] },
+            { id: "bdsm_room", name: "БДСМ комната", icon: "🚪", recipe: [["control", "imprisonment"]] },
+            { id: "female_orgasm", name: "Оргазм по женски", icon: "🌺", recipe: [["control", "prostate_fluid"]] },
+            { id: "slavery_contract", name: "Контракт на рабство", icon: "📜", recipe: [["control", "plaything"]] },
+            { id: "public_session", name: "Сессия в людном месте", icon: "🏙️", recipe: [["control", "remote_vibrator"]] },
+            { id: "anal_prep", name: "Подготовка к аналу", icon: "🧼", recipe: [["control", "enema"]] },
+            { id: "deep_penetration", name: "Глубокое проникновение", icon: "🕳️", recipe: [["drool", "tongue"]] },
+            { id: "sweet_kiss", name: "Сладкий поцелуй", icon: "🍬", recipe: [["drool", "tenderness"]] },
+            { id: "drool_chamber", name: "Камера со слюнями", icon: "🧪", recipe: [["drool", "deprivation_chamber"]] },
+            { id: "phallus_mask", name: "Маска с фалосом", icon: "🎭", recipe: [["orgasm_control", "sub", "gag"]] },
+            { id: "regime_orgasm", name: "Режимный оргазм", icon: "⏱️", recipe: [["orgasm_control", "milking"]] },
+            { id: "disobedience_penalty", name: "Штраф", icon: "📝", recipe: [["orgasm_control", "tears"]] },
+            { id: "mouth_lock_mask", name: "Маска с замком", icon: "🤐🔒", recipe: [["moans", "quietness", "leather"]] },
+            { id: "loud_scream", name: "Громкий крик", icon: "🗣️", recipe: [["moans", "pain"], ["whimper", "spanking"]] },
+            { id: "ecstasy", name: "Экстаз", icon: "✨", recipe: [["moans", "orgasm"], ["quietness", "pleasure"]] },
+            { id: "mooing", name: "Мычание", icon: "🐮", recipe: [["moans", "plastic_gag"]] },
+            { id: "pleading", name: "Мольба", icon: "🥺", recipe: [["moans", "humiliation"]] },
+            { id: "whimper", name: "Скулеж", icon: "🐕", recipe: [["moans", "spanking"]] },
+            { id: "shy_whisper", name: "Стыдливый шепот", icon: "🤫", recipe: [["moans", "embarrassment"]] },
+            { id: "rapture", name: "Упоение", icon: "😵‍💫", recipe: [["moans", "sadism"]] },
+            { id: "sweet_pain", name: "Сладкая боль", icon: "🩹", recipe: [["moans", "masochism"]] },
+            { id: "echo", name: "Эхо", icon: "🕳️", recipe: [["moans", "deprivation_chamber"]] },
+            { id: "sensory_deprivation", name: "Сенсорная депривация", icon: "🌑", recipe: [["quietness", "blindfold", "leather"]] },
+            { id: "mindfuck", name: "Майндфак", icon: "🤯🧠", recipe: [["quietness", "deprivation_chamber", "orgasm"]] },
+            { id: "nice_shower", name: "Приятный душ", icon: "🚿", recipe: [["water", "tenderness"]] },
+            { id: "developed_boy", name: "Разработанный мальчик", icon: "🍑✨", recipe: [["plastic_plug", "sub"], ["anal_prep", "plastic_plug"]] },
+            { id: "switch", name: "Свитч", icon: "🔄", recipe: [["sadism", "masochism"]] },
+            { id: "full_rights_transfer", name: "Полная передача прав", icon: "📜🩸", recipe: [["collar", "slavery_contract"]] },
+            { id: "long_abstinence", name: "Долгое воздержание", icon: "⏳", recipe: [["orgasm_refusal", "locktober"]] },
+            { id: "shame", name: "Стыд", icon: "🫣", recipe: [["embarrassment", "humiliation"]] },
+            { id: "euphoria", name: "Эйфория", icon: "🌈", recipe: [["loss_of_control", "sweet_pain"], ["nervous_tremor", "orgasm"]] },
+            { id: "subspace", name: "Саб-спейс", icon: "🌌", recipe: [["tears", "sweet_pain"], ["euphoria", "loss_of_control"]] },
+            { id: "water_torture", name: "Пытка водой", icon: "🌊", recipe: [["water", "pain", "lack_of_breath"]] },
+            { id: "deep_cleaning", name: "Глубокая очистка", icon: "🧼✨", recipe: [["lube", "enema"]] },
+            { id: "nervous_tremor", name: "Нервная дрожь", icon: "🫨", recipe: [["hypersensitivity", "electricity"]] },
+            { id: "cognitive_dissonance", name: "Когнитивный диссонанс", icon: "😵‍💫", recipe: [["mindfuck", "pleasure"]] },
+            { id: "false_reality", name: "Ложная реальность", icon: "🕶️", recipe: [["mindfuck", "under_ai_control"]] },
+            { id: "rebirth", name: "Перерождение", icon: "🐣", recipe: [["mindfuck", "catharsis", "euphoria"]] },
+            { id: "sensory_overload", name: "Сенсорная перегрузка", icon: "🎆", recipe: [["hypersensitivity", "nervous_tremor", "electric_torture", "deprivation_chamber", "orgasm_denial"]] },
+            { id: "pet", name: "Питомец", icon: "🐾", recipe: [["docility", "collar"], ["obedient_boy", "collar", "leash"]] }
+        ];
+
+        extraNames.forEach(item => {
+            if(!defaultItems.find(i=>i.id===item.id)) {
+                item.desc = `Горячий и грязный инструмент подчинения — ${item.name.toLowerCase()}. Идеально подходит для того, чтобы раздвинуть рамки твоей покорности.`;
+                defaultItems.push(item);
+            }
+        });
+
+        const achievementsDb = [
+            { id: "first_blood", name: "Первая кровь", icon: "🩸", desc: "Скрафтить Боль", check: (ids) => ids.includes("pain") },
+            { id: "tech_slave", name: "Техно-Раб", icon: "🦾", desc: "Собрать High-Tech костюм", check: (ids) => ids.includes("hitech_suit") },
+            { id: "collector", name: "Коллекционер", icon: "🎒", desc: "Собрать 30 предметов", check: (ids) => ids.length >= 30 },
+            { id: "master_collector", name: "Магистр Алхимии", icon: "👑", desc: "Собрать 100 предметов", check: (ids) => ids.length >= 100 },
+            { id: "mind_breaker", name: "Без разума", icon: "🤯", desc: "Достичь Полного распада личности", check: (ids) => ids.includes("complete_personality_collapse") }
+        ];
+
+        async function initGame() {
+            allItems = defaultItems;
+            loadProgress();
+
+            // Вычисляем редкость
+            allItems = allItems.map(item => {
+                let r = 0;
+                if (item.type === 'mistress') r = 'mistress';
+                else if (!item.recipe || item.recipe.length === 0) r = 0;
+                else r = Math.min(...item.recipe.map(rec => rec.length));
+                return { ...item, rarity: r };
+            });
+
+            if (unlockedItemIds.length === 0) {
+                unlockedItemIds = allItems.filter(i => (!i.recipe || i.recipe.length === 0) && i.type !== 'mistress').map(i => i.id);
+                unlockedItemIds.push("bdsm_default");
+                saveProgress();
+            }
+
+            recalculateExhaustedAndFinal();
+            applySettings();
+            renderInventory();
+            updateProgress();
+            checkProgressionUnlocks();
+            resetIdleTimer();
+        }
+
+        // --- ЛОГИКА СОХРАНЕНИЙ И НАСТРОЕК ---
+        function loadProgress() {
+            const localIds = localStorage.getItem('unlockedIds');
+            const localAch = localStorage.getItem('achievements');
+            const localSet = localStorage.getItem('settings');
+            if (localIds) unlockedItemIds = JSON.parse(localIds);
+            if (localAch) unlockedAchievements = JSON.parse(localAch);
+            if (localSet) settings = { ...settings, ...JSON.parse(localSet) };
+            if (!settings.unlockedBgs) settings.unlockedBgs = ["theme-default"];
+            if (settings.failedAttempts === undefined) settings.failedAttempts = 0;
+            if (settings.showExhausted === undefined) settings.showExhausted = true;
+        }
+
+        function saveProgress() {
+            localStorage.setItem('unlockedIds', JSON.stringify(unlockedItemIds));
+            localStorage.setItem('achievements', JSON.stringify(unlockedAchievements));
+            localStorage.setItem('settings', JSON.stringify(settings));
+        }
+
+        function applySettings() {
+            document.getElementById('app-body').className = settings.currentTheme;
+            const mistress = allItems.find(i => i.id === settings.currentMistressId) || allItems.find(i => i.id === "bdsm_default");
+            if (mistress) {
+                document.getElementById('header-mistress-avatar').innerText = mistress.icon;
+                document.getElementById('header-mistress-name').innerText = mistress.name;
+            }
+            renderInventory();
+        }
+
+        function updateProgress() {
+            const craftable = allItems.filter(i => i.type !== 'mistress' && i.recipe && i.recipe.length > 0).length;
+            const unlocked = allItems.filter(i => unlockedItemIds.includes(i.id) && i.type !== 'mistress' && i.recipe && i.recipe.length > 0).length;
+            document.getElementById('progress-text').innerHTML = `Открыто: <span style="color:var(--accent-neon)">${unlocked}</span> / ${craftable}`;
+            document.getElementById('fails-text').innerText = `Ошибок: ${settings.failedAttempts}`;
+        }
+
+        // Вычисляем какие элементы полностью исчерпаны и какие тупиковые
+        function recalculateExhaustedAndFinal() {
+            exhaustedItemIds = [];
+            const allIngredients = new Set();
+
+            allItems.forEach(item => {
+                if(item.recipe) item.recipe.forEach(rec => rec.forEach(id => allIngredients.add(id)));
+            });
+
+            allItems.forEach(item => {
+                if (item.type === 'mistress') { item.isFinal = false; return; }
+                
+                item.isFinal = !allIngredients.has(item.id);
+
+                if (!item.isFinal) {
+                    let usedIn = [];
+                    allItems.forEach(target => {
+                        if (target.recipe) {
+                            target.recipe.forEach(rec => { if (rec.includes(item.id)) usedIn.push(target.id); });
+                        }
+                    });
+                    if (usedIn.length > 0) {
+                        const allUnlocked = usedIn.every(tid => unlockedItemIds.includes(tid));
+                        if (allUnlocked) exhaustedItemIds.push(item.id);
+                    }
+                }
+            });
+        }
+
+        // --- ИНВЕНТАРЬ ---
+        function renderInventory() {
+            const grid = document.getElementById('inventory-grid');
+            grid.innerHTML = '';
+            
+            const items = allItems.filter(i => unlockedItemIds.includes(i.id));
+            items.forEach(item => {
+                if (!settings.showFinals && item.isFinal) return; 
+                
+                const isExhausted = exhaustedItemIds.includes(item.id);
+                if (!settings.showExhausted && isExhausted) return; // Скрытие исчерпанных
+                
+                const el = document.createElement('div');
+                const rarityClass = item.type === 'mistress' ? 'rarity-mistress' : `rarity-${item.rarity}`;
+                el.className = `inv-item ${rarityClass} ${item.isFinal ? 'final-item' : ''} ${isExhausted ? 'exhausted-item' : ''}`;
+                el.innerHTML = `<div class="inv-icon">${item.icon}</div><div class="inv-name">${item.name}</div>`;
+                el.onclick = () => selectItem(item);
+                grid.appendChild(el);
+            });
+        }
+
+        // --- ЛОГИКА СЛОТОВ И КРАФТА ---
+        function selectItem(item) {
+            resetIdleTimer();
+            const emptyIndex = activeSlots.findIndex(slot => slot === null);
+            if (emptyIndex !== -1) activeSlots[emptyIndex] = item;
+            else activeSlots[activeSlots.length - 1] = item;
+            renderSlots();
+        }
+
+        function clearSlot(index) { activeSlots[index - 1] = null; renderSlots(); resetIdleTimer();}
+        function clearAllSlots() { activeSlots = [null, null, null, null, null]; renderSlots(); resetIdleTimer();}
+
+        function renderSlots() {
+            const btn = document.getElementById('merge-btn');
+            const filledCount = activeSlots.filter(s => s !== null).length; 
+
+            activeSlots.forEach((item, i) => {
+                const slotEl = document.getElementById(`slot${i + 1}`);
+                if (item) {
+                    let innerHTML = '';
+                    if (filledCount >= 2) innerHTML += `<div class="stage-particle" style="left:20%; animation-delay: 0s;"></div><div class="stage-particle" style="left:50%; animation-delay: 0.5s;"></div><div class="stage-particle" style="left:80%; animation-delay: 0.2s;"></div>`;
+                    if (filledCount === 5) innerHTML += `<div class="sparks-container"><div class="spark"></div><div class="spark"></div><div class="spark"></div><div class="spark"></div><div class="spark"></div></div>`;
+                    innerHTML += `<div class="inv-icon" style="font-size:32px;">${item.icon}</div><div class="slot-name">${item.name}</div>`;
+                    slotEl.innerHTML = innerHTML;
+                    slotEl.className = `slot filled state-${filledCount}`;
+                } else {
+                    slotEl.innerHTML = ''; slotEl.className = 'slot';
+                }
+            });
+            btn.disabled = (filledCount < 2);
+        }
+
+        function attemptMerge() {
+            resetIdleTimer();
+            const currentIds = activeSlots.filter(s => s !== null).map(s => s.id).sort();
+            const comboSize = currentIds.length;
+            if (comboSize < 2) return;
+
+            const craftedItem = allItems.find(item => {
+                if (!item.recipe || item.recipe.length === 0) return false;
+                return item.recipe.some(rec => {
+                    if (rec.length !== comboSize) return false;
+                    const sortedRec = [...rec].sort();
+                    return currentIds.every((id, index) => id === sortedRec[index]);
+                });
+            });
+
+            if (craftedItem) {
+                const blast = document.createElement('div');
+                blast.className = `merge-blast`;
+                let color = '255,85,0'; if(comboSize==3) color = '255,0,255'; if(comboSize==4) color = '255,170,0'; if(comboSize>=5) color = '255,0,0';
+                blast.style.background = `radial-gradient(circle, rgba(${color},1) 0%, transparent 60%)`;
+                const rect = document.querySelector('.slots-container').getBoundingClientRect();
+                blast.style.top = `${rect.top + rect.height/2}px`; blast.style.left = `${rect.left + rect.width/2}px`;
+                blast.style.animation = `blastAnim ${1.5 - comboSize*0.1}s ease-out forwards`;
+                document.body.appendChild(blast); setTimeout(() => blast.remove(), 1500);
+
+                tg.HapticFeedback.impactOccurred(comboSize >= 4 ? 'rigid' : 'heavy');
+                activeSlots = [null, null, null, null, null]; renderSlots();
+
+                if (!unlockedItemIds.includes(craftedItem.id)) {
+                    unlockedItemIds.push(craftedItem.id);
+                    recalculateExhaustedAndFinal(); // Пересчет исчерпанных элементов!
+                    saveProgress(); renderInventory(); updateProgress(); 
+                    
+                    checkProgressionUnlocks();
+                    showItemDetailsModal(craftedItem, true);
+                    
+                    const activeMistress = allItems.find(i=>i.id===settings.currentMistressId) || allItems.find(i=>i.id==="bdsm_default");
+                    const quote = generateMistressQuote(craftedItem, activeMistress.personality);
+                    if(settings.enableVoice) triggerBubble(quote);
+
+                } else {
+                    showToast(`💡 Создано: ${craftedItem.name}`);
+                }
+            } else {
+                // НЕУДАЧНЫЙ КРАФТ
+                settings.failedAttempts++;
+                saveProgress();
+                updateProgress();
+                tg.HapticFeedback.notificationOccurred('error'); 
+                clearAllSlots(); 
+                showToast("❌ Неверная комбинация");
+            }
+        }
+
+        // Открытия БДСМ-ок (20, 40, 60, 80) и фонов (15, 30, 55, 75)
+        function checkProgressionUnlocks() {
+            const count = unlockedItemIds.filter(id => allItems.find(i=>i.id===id)?.type !== 'mistress').length;
+            
+            const mistresses = allItems.filter(i => i.type === 'mistress');
+            mistresses.forEach(m => {
+                if (m.req !== undefined && count >= m.req && !unlockedItemIds.includes(m.id)) {
+                    unlockedItemIds.push(m.id);
+                    setTimeout(() => {
+                        showToast(`🔥 Открыта новая БДСМ-ка: ${m.name}! Загляните в Гардероб.`, true);
+                        tg.HapticFeedback.notificationOccurred('success');
+                    }, 1000);
+                }
+            });
+
+            backgroundsDb.forEach(bg => {
+                if (count >= bg.req && !settings.unlockedBgs.includes(bg.id)) {
+                    settings.unlockedBgs.push(bg.id);
+                    setTimeout(() => showToast(`🌌 Открыт новый скин: ${bg.name}!`, true), 2000);
+                }
+            });
+
+            achievementsDb.forEach(ach => {
+                if (!unlockedAchievements.includes(ach.id) && ach.check(unlockedItemIds)) {
+                    unlockedAchievements.push(ach.id);
+                    setTimeout(() => { showToast(`🏆 Достижение: ${ach.name}`, true); }, 3000);
+                }
+            });
+            saveProgress();
+            renderInventory();
+        }
+
+        // --- СИСТЕМА ДИАЛОГОВ (Bubble + Idle) ---
+        function resetIdleTimer() {
+            clearTimeout(idleTimer);
+            if(settings.enableVoice) {
+                idleTimer = setTimeout(triggerIdleQuote, 60000); 
+            }
+        }
+
+        function triggerBubble(text) {
+            if(!settings.enableVoice) return;
+            const bubble = document.getElementById('speech-bubble');
+            bubble.innerText = text;
+            bubble.classList.add('show');
+            clearTimeout(bubbleTimer);
+            bubbleTimer = setTimeout(() => bubble.classList.remove('show'), 10000); 
+        }
+
+        function triggerIdleQuote() {
+            const activeMistress = allItems.find(i=>i.id===settings.currentMistressId);
+            const p = activeMistress ? activeMistress.personality : 'default';
+            let quote = "";
+            if (p === 'strict') quote = "Твоя медлительность начинает меня раздражать. Работай!";
+            else if (p === 'gentle') quote = "Малыш, ты запутался? Не торопись, я подожду.";
+            else quote = "Ты уснул? Я жду продолжения.";
+            triggerBubble(quote);
+            resetIdleTimer();
+        }
+
+        function generateMistressQuote(item, personality) {
+            if (item.quotes && item.quotes[personality]) {
+                return item.quotes[personality];
+            }
+            
+            const n = item.name.toLowerCase();
+            if (personality === 'strict') {
+                const arr = [`Хм, ${n}... Отличный выбор. Теперь ты будешь страдать еще сильнее.`,`Думаешь, ${n} спасет тебя? Это лишь начало твоих мучений.`,`Смотри внимательно. ${item.name} — это твой новый ночной кошмар.`,`На колени. Я покажу тебе, как ${n} ломает волю.`];
+                return arr[Math.floor(Math.random() * arr.length)];
+            }
+            if (personality === 'gentle') {
+                const arr = [`Ох... ${n}. Обещаю, мой сладкий, я буду использовать это очень аккуратно.`,`Не бойся. ${item.name} принесет тебе только приятные эмоции, доверься мне.`,`Какой чудесный ${n}... Иди ко мне, давай попробуем это вместе.`,`Ты такой молодец, что открыл ${n}. Заслужил поцелуй.`];
+                return arr[Math.floor(Math.random() * arr.length)];
+            }
+            
+            const arr = [`О, ${n}. Интересный инструмент для нашей сессии.`,`${item.name}. Посмотрим, на что ты способен с этим.`,`Добавлю ${n} в свой арсенал. Готовься.`];
+            return arr[Math.floor(Math.random() * arr.length)];
+        }
+
+        // --- ОКНА И МЕНЮ ---
+        function openModal(id) { document.getElementById(id).classList.add('active'); }
+        function closeModal(id) { document.getElementById(id).classList.remove('active'); resetIdleTimer(); }
+
+        function showToast(msg, isAchievement = false) {
+            const t = document.getElementById('toast');
+            t.innerHTML = msg; t.className = `toast show ${isAchievement ? 'achievement' : ''}`;
+            setTimeout(() => t.classList.remove('show'), 3500);
+        }
+
+        // МЕНЮ: ЭНЦИКЛОПЕДИЯ
+        function openCollectionMenu() {
+            const list = document.getElementById('list-modal-content');
+            document.getElementById('list-modal-title').innerText = "Энциклопедия";
+            list.innerHTML = '';
+            
+            const items = allItems.filter(i => unlockedItemIds.includes(i.id) && i.type !== 'mistress');
+            if(items.length === 0) {
+                list.innerHTML = '<div style="text-align:center; color:#888;">Пусто</div>';
+            } else {
+                list.className = "modal-scroll-area collection-grid";
+                items.forEach(item => {
+                    list.innerHTML += `
+                        <div class="inv-item rarity-${item.rarity}" style="padding:15px 5px;" onclick="showItemDetailsModalById('${item.id}')">
+                            <div class="inv-icon" style="font-size:35px;">${item.icon}</div>
+                            <div class="inv-name" style="font-size:11px; margin-top:5px;">${item.name}</div>
+                        </div>`;
+                });
+            }
+            openModal('list-modal');
+        }
+
+        function showItemDetailsModalById(id) {
+            const item = allItems.find(i => i.id === id);
+            if(item) { closeModal('list-modal'); showItemDetailsModal(item, false); }
+        }
+
+        // ДОСЬЕ ПРЕДМЕТА
+        function showItemDetailsModal(item, isNewUnlock) {
+            document.getElementById('modal-icon').innerText = item.icon;
+            document.getElementById('modal-title').innerText = isNewUnlock ? (item.type === 'mistress' ? "Новая БДСМ-ка!" : "Новое открытие!") : item.name;
+            document.getElementById('modal-desc').innerText = item.desc || item.description || "Таинственный элемент...";
+            
+            const recipeBox = document.getElementById('modal-recipe-box');
+            if (recipeBox) {
+                if (!isNewUnlock && item.recipe && item.recipe.length > 0) {
+                    recipeBox.style.display = "block";
+                    const comboContainer = document.getElementById('modal-recipe-combo');
+                    
+                    const firstRecipe = item.recipe[0];
+                    let recipeHtml = "";
+                    firstRecipe.forEach((rId, index) => {
+                        const rItem = allItems.find(i => i.id === rId);
+                        if (rItem) {
+                            recipeHtml += `<div class="recipe-item">${rItem.icon} <span>${rItem.name}</span></div>`;
+                            if (index < firstRecipe.length - 1) recipeHtml += `<span style="color:var(--accent-neon); font-weight:bold;">+</span>`;
+                        }
+                    });
+                    if(item.recipe.length > 1) recipeHtml += `<div style="width:100%; font-size:9px; color:#666; margin-top:5px;">(Доступны и альтернативные рецепты)</div>`;
+                    comboContainer.innerHTML = recipeHtml;
+                } else if (!isNewUnlock && (!item.recipe || item.recipe.length === 0)) {
+                    recipeBox.style.display = "block";
+                    document.getElementById('modal-recipe-combo').innerHTML = `<div class="recipe-item" style="color:#aaa;">Базовый элемент / Открыто за прогресс</div>`;
+                } else {
+                    recipeBox.style.display = "none";
+                }
+            }
+
+            const activeMistress = allItems.find(i=>i.id===settings.currentMistressId) || allItems.find(i=>i.id==="bdsm_default");
+            const quote = item.type === 'mistress' ? (item.desc || "Новая госпожа.") : generateMistressQuote(item, activeMistress.personality);
+            const quoteEl = document.getElementById('modal-quote');
+            if(quoteEl) quoteEl.innerText = `"${quote}"`;
+            
+            setTimeout(() => openModal('epic-modal'), 100);
+        }
+
+        // МЕНЮ: АЧИВКИ
+        function openAchievementsMenu() {
+            const list = document.getElementById('list-modal-content');
+            list.className = "modal-scroll-area";
+            document.getElementById('list-modal-title').innerText = "Достижения";
+            list.innerHTML = '';
+            
+            achievementsDb.forEach(ach => {
+                const isUnlocked = unlockedAchievements.includes(ach.id);
+                list.innerHTML += `
+                    <div class="list-item" style="opacity: ${isUnlocked ? '1' : '0.4'}; border-color: ${isUnlocked ? 'var(--legendary-color)' : 'var(--border-color)'}">
+                        <div class="list-icon">${isUnlocked ? ach.icon : '🔒'}</div>
+                        <div class="list-info">
+                            <div class="list-name" style="color: ${isUnlocked ? 'var(--legendary-color)' : 'var(--text-main)'}">${ach.name}</div>
+                            <div class="list-desc">${ach.desc}</div>
+                        </div>
+                    </div>`;
+            });
+            openModal('list-modal');
+        }
+
+        function toggleSetting(key) {
+            settings[key] = !settings[key];
+            saveProgress(); applySettings(); openWardrobeMenu();
+        }
+
+        // МЕНЮ: ГАРДЕРОБ И НАСТРОЙКИ
+        function openWardrobeMenu() {
+            const list = document.getElementById('list-modal-content');
+            document.getElementById('list-modal-title').innerText = "Гардероб и Настройки";
+            list.className = "modal-scroll-area"; 
+            let html = "";
+
+            // Настройки (Тумблеры)
+            html += `<div class="settings-section-title">Настройки интерфейса</div>`;
+            
+            html += `
+            <div class="toggle-row">
+                <div>
+                    <div class="toggle-label">Тупиковые элементы (Светлые)</div>
+                    <div class="toggle-desc">Показывать элементы, из которых нельзя больше ничего скрафтить.</div>
+                </div>
+                <label class="switch"><input type="checkbox" ${settings.showFinals?'checked':''} onchange="toggleSetting('showFinals')"><span class="slider"></span></label>
+            </div>
+            <div class="toggle-row">
+                <div>
+                    <div class="toggle-label">Исчерпанные элементы (С галочкой ✓)</div>
+                    <div class="toggle-desc">Показывать элементы, все рецепты которых вы уже открыли.</div>
+                </div>
+                <label class="switch"><input type="checkbox" ${settings.showExhausted?'checked':''} onchange="toggleSetting('showExhausted')"><span class="slider"></span></label>
+            </div>
+            <div class="toggle-row">
+                <div>
+                    <div class="toggle-label">Реплики БДСМ-ки</div>
+                    <div class="toggle-desc">Показывать всплывающие комикс-пузыри с текстом.</div>
+                </div>
+                <label class="switch"><input type="checkbox" ${settings.enableVoice?'checked':''} onchange="toggleSetting('enableVoice')"><span class="slider"></span></label>
+            </div>
+            `;
+
+            // БДСМ-ки
+            html += `<div class="settings-section-title" style="margin-top:20px;">Смена БДСМ-ки</div>`;
+            const mistresses = allItems.filter(i => unlockedItemIds.includes(i.id) && i.type === 'mistress');
+            mistresses.forEach(m => {
+                const isActive = m.id === settings.currentMistressId;
+                html += `
+                    <div class="list-item" style="border-color: ${isActive ? 'var(--accent-neon)' : 'var(--border-color)'}; margin-bottom:5px; padding:8px;">
+                        <div class="list-icon" style="font-size:24px; min-width:30px;">${m.icon}</div>
+                        <div class="list-info">
+                            <div class="list-name" style="font-size:12px;">${m.name}</div>
+                            <div class="list-desc" style="font-size:9px;">Характер: ${m.personality==='strict'?'Строгая':m.personality==='gentle'?'Нежная':'Обычная'}</div>
+                        </div>
+                        ${!isActive ? `<button class="close-modal-btn" style="margin:0; padding: 4px 10px; font-size:10px;" onclick="selectMistress('${m.id}')">Назначить</button>` : ''}
+                    </div>`;
+            });
+
+            // Фоны
+            html += `<div class="settings-section-title" style="margin-top:20px;">Скины комнаты (Фоны)</div>`;
+            backgroundsDb.forEach(bg => {
+                const isUnlocked = settings.unlockedBgs.includes(bg.id);
+                const isActive = bg.id === settings.currentTheme;
+
+                html += `
+                    <div class="list-item" style="border-color: ${isActive ? 'var(--accent-neon)' : 'var(--border-color)'}; opacity: ${isUnlocked?1:0.4}; margin-bottom:5px; padding:8px;">
+                        <div class="list-icon" style="font-size:24px; min-width:30px;">${isUnlocked ? bg.icon : '🔒'}</div>
+                        <div class="list-info">
+                            <div class="list-name" style="font-size:12px; color: ${isUnlocked ? 'var(--text-main)' : '#666'}">${bg.name}</div>
+                            <div class="list-desc" style="font-size:9px;">${bg.desc}</div>
+                        </div>
+                        ${isUnlocked && !isActive ? `<button class="close-modal-btn" style="margin:0; padding: 4px 10px; font-size:10px; background:var(--rare-color);" onclick="selectBackground('${bg.id}')">Применить</button>` : ''}
+                    </div>`;
+            });
+
+            list.innerHTML = html;
+            openModal('list-modal');
+        }
+
+        function selectMistress(id) {
+            settings.currentMistressId = id; saveProgress(); applySettings(); openWardrobeMenu();
+            const activeM = allItems.find(i=>i.id===id);
+            if(settings.enableVoice) triggerBubble(`Слушай меня внимательно. Теперь я твоя ${activeM.name}.`);
+            tg.HapticFeedback.impactOccurred('light');
+        }
+
+        function selectBackground(id) {
+            settings.currentTheme = id; saveProgress(); applySettings(); openWardrobeMenu();
+            tg.HapticFeedback.impactOccurred('medium');
+        }
+
+        window.onload = initGame;
+    </script>
+</body>
+</html>
