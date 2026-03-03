@@ -50,50 +50,18 @@
         body.theme-abyss .bg-layer { background: radial-gradient(circle at 50% 100%, #1a0033 0%, #000000 100%); }
         body.theme-abyss .bg-fx-layer { background: repeating-radial-gradient(circle at 50% 50%, rgba(255,255,255,0.02) 0, rgba(255,255,255,0.02) 10px, transparent 10px, transparent 20px); animation: breathBg 8s infinite alternate; }
 
-        /* НОВЫЕ ФОНЫ ДЛЯ ВЫСОКИХ УРОВНЕЙ ПРОГРЕССА */
-        /* 100: Космос (Медленно плывущие звезды) */
         body.theme-cosmos .bg-layer { background: radial-gradient(circle at 50% 50%, #050814 0%, #000 100%); }
-        body.theme-cosmos .bg-fx-layer {
-            background-image: 
-                radial-gradient(1.5px 1.5px at 10% 10%, #fff 100%, transparent), 
-                radial-gradient(2px 2px at 30% 40%, rgba(255,255,255,0.8) 100%, transparent), 
-                radial-gradient(1px 1px at 70% 20%, rgba(255,255,255,0.5) 100%, transparent), 
-                radial-gradient(2.5px 2.5px at 80% 80%, #fff 100%, transparent);
-            background-size: 150px 150px; 
-            animation: slowDrift 25s linear infinite;
-        }
+        body.theme-cosmos .bg-fx-layer { background-image: radial-gradient(1.5px 1.5px at 10% 10%, #fff 100%, transparent), radial-gradient(2px 2px at 30% 40%, rgba(255,255,255,0.8) 100%, transparent), radial-gradient(1px 1px at 70% 20%, rgba(255,255,255,0.5) 100%, transparent), radial-gradient(2.5px 2.5px at 80% 80%, #fff 100%, transparent); background-size: 150px 150px; animation: slowDrift 25s linear infinite; }
 
-        /* 130: Инферно (Поднимающиеся угольки) */
         body.theme-inferno .bg-layer { background: linear-gradient(to top, #3a0000 0%, #000 60%); }
-        body.theme-inferno .bg-fx-layer {
-            background-image: 
-                radial-gradient(3px 3px at 20% 100%, rgba(255,68,0,0.8) 100%, transparent), 
-                radial-gradient(4px 4px at 60% 150%, rgba(255,136,0,0.6) 100%, transparent), 
-                radial-gradient(2px 2px at 80% 120%, rgba(255,0,0,0.9) 100%, transparent);
-            background-size: 120px 200px; 
-            animation: emberRise 8s infinite linear;
-        }
+        body.theme-inferno .bg-fx-layer { background-image: radial-gradient(3px 3px at 20% 100%, rgba(255,68,0,0.8) 100%, transparent), radial-gradient(4px 4px at 60% 150%, rgba(255,136,0,0.6) 100%, transparent), radial-gradient(2px 2px at 80% 120%, rgba(255,0,0,0.9) 100%, transparent); background-size: 120px 200px; animation: emberRise 8s infinite linear; }
 
-        /* 170: Эфир (Мягкие переливающиеся туманности) */
         body.theme-ethereal .bg-layer { background: radial-gradient(circle at top left, #1a0033 0%, #000 80%); }
-        body.theme-ethereal .bg-fx-layer {
-            background: 
-                radial-gradient(circle at 70% 30%, rgba(0, 229, 255, 0.1) 0%, transparent 50%), 
-                radial-gradient(circle at 30% 70%, rgba(255, 0, 255, 0.1) 0%, transparent 50%);
-            animation: etherPulse 6s infinite alternate ease-in-out;
-        }
+        body.theme-ethereal .bg-fx-layer { background: radial-gradient(circle at 70% 30%, rgba(0, 229, 255, 0.1) 0%, transparent 50%), radial-gradient(circle at 30% 70%, rgba(255, 0, 255, 0.1) 0%, transparent 50%); animation: etherPulse 6s infinite alternate ease-in-out; }
 
-        /* 180: Трансцендентность (Взлетающие золотые нити/искры) */
         body.theme-transcendence .bg-layer { background: radial-gradient(circle at center, #221500 0%, #000 100%); }
-        body.theme-transcendence .bg-fx-layer {
-            background-image: 
-                radial-gradient(1.5px 15px at 30% 50%, rgba(255,200,0,0.8) 100%, transparent), 
-                radial-gradient(2.5px 20px at 70% 80%, rgba(255,255,0,0.6) 100%, transparent);
-            background-size: 100px 180px; 
-            animation: goldenRain 6s infinite linear;
-        }
+        body.theme-transcendence .bg-fx-layer { background-image: radial-gradient(1.5px 15px at 30% 50%, rgba(255,200,0,0.8) 100%, transparent), radial-gradient(2.5px 20px at 70% 80%, rgba(255,255,0,0.6) 100%, transparent); background-size: 100px 180px; animation: goldenRain 6s infinite linear; }
 
-        /* Анимации фонов */
         @keyframes gridScan { 0% { transform: translate(0, 0) rotate(0deg); } 100% { transform: translate(-10%, -10%) rotate(360deg); } }
         @keyframes pulseBg { 0% { opacity: 0.5; } 100% { opacity: 1; } }
         @keyframes breathBg { 0% { transform: scale(1); } 100% { transform: scale(1.05); } }
@@ -148,8 +116,60 @@
         .crafting-section { padding: 30px 20px 10px; display: flex; flex-direction: column; align-items: center; gap: 15px; position: relative; z-index: 10; }
         .slots-container { display: flex; gap: 8px; justify-content: center; width: 100%; max-width: 500px; position: relative; }
         .slot { flex: 1; aspect-ratio: 1 / 1; max-width: 70px; background: var(--panel-bg); border: 1px dashed var(--border-color); border-radius: 8px; display: flex; flex-direction: column; align-items: center; justify-content: center; font-size: 24px; transition: all 0.3s; cursor: pointer; position: relative; overflow: visible; }
-        .slot-name { font-size: 8px; position: absolute; bottom: 4px; color: var(--text-muted); text-align: center; width: 100%; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; z-index: 5; }
+        .slot-name { font-size: 8px; position: absolute; bottom: 4px; color: var(--text-muted); text-align: center; width: 100%; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; z-index: 5; pointer-events: none;}
 
+        /* УНИКАЛЬНАЯ АНИМАЦИЯ 3D-КАРТОЧКИ ПРИ ПЕРЕТАСКИВАНИИ */
+        .drag-clone {
+            position: fixed !important; pointer-events: none !important; z-index: 9999 !important;
+            width: 70px !important; height: 90px !important; 
+            background: linear-gradient(145deg, rgba(30, 35, 45, 0.95), rgba(10, 15, 20, 0.95)) !important;
+            border: 2px solid var(--accent-neon) !important; border-radius: 12px !important;
+            display: flex !important; flex-direction: column !important; align-items: center !important; justify-content: center !important;
+            box-shadow: 0 30px 60px rgba(0,0,0,0.9), 0 0 25px var(--accent-glow) !important;
+            transition: transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275) !important; /* Плавный возврат и наклон */
+            margin: 0 !important; padding: 5px !important;
+        }
+        .drag-clone .inv-name { display: block !important; font-size: 10px !important; line-height: 1.1 !important; margin-top: 5px !important; text-align: center !important; font-weight: bold;}
+        .drag-clone .inv-icon { font-size: 38px !important; margin: 0 !important; text-shadow: 0 0 15px rgba(255,255,255,0.4); }
+
+        /* ЭФФЕКТЫ ЧАСТИЦ И СВЕЧЕНИЯ ПРИ МАГНИТЕ (ДЛЯ САМОЙ КАРТОЧКИ) */
+        .drag-clone.ready-to-snap { box-shadow: 0 0 40px var(--accent-neon) !important; animation: pulseReady 0.8s infinite alternate !important; }
+        @keyframes pulseReady { 0% { filter: brightness(1.1); } 100% { filter: brightness(1.5); } }
+
+        /* Кастомные эффекты частиц на карточке по скинам */
+        body.theme-matrix .drag-clone.ready-to-snap { box-shadow: 0 0 40px #0f0, inset 0 0 15px #0f0 !important; animation: glitchReady 0.2s infinite !important;}
+        body.theme-blood .drag-clone.ready-to-snap { box-shadow: 0 15px 40px #f00, 0 -15px 40px #f00 !important; animation: dripReady 1s infinite alternate !important;}
+        body.theme-neon .drag-clone.ready-to-snap { box-shadow: 0 0 50px #0ff, 0 0 25px #f0f !important; }
+        body.theme-inferno .drag-clone.ready-to-snap { box-shadow: 0 -25px 50px #ff4400 !important; animation: burnReady 0.5s infinite alternate !important; }
+        body.theme-transcendence .drag-clone.ready-to-snap { box-shadow: 0 0 60px #ffaa00, 0 0 25px #fff !important; animation: floatReady 1s infinite alternate !important; }
+        body.theme-ethereal .drag-clone.ready-to-snap { box-shadow: 0 0 50px #0ff !important; filter: hue-rotate(90deg) brightness(1.3); }
+        body.theme-abyss .drag-clone.ready-to-snap { box-shadow: inset 0 0 40px #000, 0 0 30px #a0f !important; }
+        body.theme-cosmos .drag-clone.ready-to-snap { box-shadow: 0 0 50px #fff, 0 0 15px #00e5ff !important; }
+
+        @keyframes glitchReady { 0% { transform: scale(0.9) skewX(2deg); } 100% { transform: scale(0.9) skewX(-2deg); } }
+        @keyframes dripReady { 0% { transform: scale(0.9) translateY(0); } 100% { transform: scale(0.9) translateY(5px); } }
+        @keyframes burnReady { 0% { transform: scale(0.9) translateY(0); } 100% { transform: scale(0.9) translateY(-5px); filter: contrast(1.5); } }
+        @keyframes floatReady { 0% { transform: scale(0.9) translateY(3px); } 100% { transform: scale(0.9) translateY(-3px); } }
+
+        /* Эффекты магнитного захвата слотом (Всасывание) */
+        .slot.magnet-hover {
+            transform: scale(1.25) !important; border: 2px solid var(--accent-neon);
+            box-shadow: 0 0 40px var(--accent-glow), inset 0 0 30px var(--accent-glow); background: rgba(255, 85, 0, 0.3); z-index: 20;
+        }
+        
+        body.theme-matrix .slot.magnet-hover { border-color: #0f0; box-shadow: 0 0 40px #0f0, inset 0 0 30px #0f0; background: rgba(0,255,0,0.3); }
+        body.theme-blood .slot.magnet-hover { border-color: #f00; box-shadow: 0 0 40px #f00, inset 0 0 30px #f00; background: rgba(255,0,0,0.3); }
+        body.theme-neon .slot.magnet-hover { border-color: #0ff; box-shadow: 0 0 40px #0ff, inset 0 0 30px #0ff; background: rgba(0,255,255,0.3); }
+        body.theme-abyss .slot.magnet-hover { border-color: #a0f; box-shadow: 0 0 40px #a0f, inset 0 0 30px #a0f; background: rgba(170,0,255,0.3); }
+        body.theme-cosmos .slot.magnet-hover { border-color: #fff; box-shadow: 0 0 40px #fff, inset 0 0 30px #fff; background: rgba(255,255,255,0.3); }
+        body.theme-inferno .slot.magnet-hover { border-color: #ff4400; box-shadow: 0 0 40px #ff4400, inset 0 0 30px #ff4400; background: rgba(255,68,0,0.3); }
+        body.theme-ethereal .slot.magnet-hover { border-color: #0ff; box-shadow: 0 0 40px #0ff, inset 0 0 30px #0ff; background: rgba(0,255,255,0.3); }
+        body.theme-transcendence .slot.magnet-hover { border-color: #ffaa00; box-shadow: 0 0 40px #ffaa00, inset 0 0 30px #ffaa00; background: rgba(255,170,0,0.3); }
+
+        .slot.snap-anim { animation: snapDefault 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+        @keyframes snapDefault { 0% { transform: scale(1.3); box-shadow: 0 0 30px var(--accent-neon); } 100% { transform: scale(1); } }
+
+        /* Эффекты пульсации заполненных слотов */
         .slot.state-1 { border: 1px solid var(--rare-color); box-shadow: 0 0 10px rgba(0, 229, 255, 0.3); background: #151b24; }
         .slot.state-2 { border: 1px solid var(--accent-neon); box-shadow: 0 0 15px var(--accent-glow); animation: pulseState2 1.5s infinite alternate; background: #1a1614; }
         .slot.state-3 { border: 1px solid var(--epic-color); box-shadow: 0 0 20px rgba(255, 0, 255, 0.5); animation: pulseState3 0.8s infinite alternate, shakeState3 2s infinite linear; background: #1c141c; }
@@ -160,9 +180,6 @@
         @keyframes pulseState3 { 100% { box-shadow: 0 0 30px rgba(255,0,255,0.8), inset 0 0 15px rgba(255,0,255,0.4); } }
         @keyframes pulseState4 { 100% { box-shadow: 0 0 35px rgba(255,170,0,1), inset 0 0 20px rgba(255,170,0,0.6); filter: hue-rotate(15deg); } }
         @keyframes pulseState5 { 100% { box-shadow: 0 0 50px #ff0000, inset 0 0 30px #ff0000; filter: hue-rotate(30deg) brightness(1.5); } }
-        @keyframes shakeState3 { 0%, 100% { transform: translate(0, 0) rotate(0deg); } 25% { transform: translate(1px, 1px) rotate(1deg); } 50% { transform: translate(-1px, -1px) rotate(-1deg); } 75% { transform: translate(-1px, 1px) rotate(0deg); } }
-        @keyframes shakeState4 { 0%, 100% { transform: translate(0, 0); } 25% { transform: translate(2px, -2px); } 50% { transform: translate(-2px, 2px); } 75% { transform: translate(2px, 2px); } }
-        @keyframes shakeState5 { 0%, 100% { transform: translate(0, 0); } 25% { transform: translate(4px, -4px) scale(1.05); } 50% { transform: translate(-4px, 4px) scale(0.95); } 75% { transform: translate(4px, 4px) scale(1.1); } }
 
         .stage-particle { position: absolute; width: 3px; height: 3px; border-radius: 50%; bottom: 5px; opacity: 0; pointer-events: none; z-index: 20; }
         .state-2 .stage-particle { background: var(--accent-neon); box-shadow: 0 0 5px var(--accent-neon); animation: floatUp 1.5s infinite; }
@@ -189,7 +206,6 @@
         .merge-btn:active { transform: scale(0.9); box-shadow: 0 0 30px rgba(255, 85, 0, 0.8); }
         .merge-btn:disabled { border-color: #333; color: #555; box-shadow: none; cursor: not-allowed; background: transparent; }
 
-        /* Кнопка Подсказки */
         .hint-btn {
             background: rgba(255, 85, 0, 0.1); color: var(--accent-neon); border: 1px solid var(--accent-neon);
             padding: 6px 20px; border-radius: 15px; font-size: 11px; cursor: pointer; text-transform: uppercase;
@@ -201,6 +217,7 @@
         .inventory-section {
             flex: 1; background: var(--panel-bg); border-top-left-radius: 24px; border-top-right-radius: 24px;
             padding: 15px; overflow-y: auto; border-top: 1px solid var(--border-color); backdrop-filter: blur(15px); z-index: 10;
+            touch-action: pan-y; 
         }
         .inventory-section::-webkit-scrollbar { width: 0px; }
         .inventory-title { font-size: 11px; color: var(--text-muted); text-transform: uppercase; margin-bottom: 10px; letter-spacing: 1px; display: flex; justify-content: space-between; align-items: center;}
@@ -210,11 +227,13 @@
         .inv-item {
             background: rgba(0,0,0,0.5); border: 1px solid var(--border-color); border-radius: 8px;
             padding: 5px 2px; display: flex; flex-direction: column; align-items: center;
-            justify-content: center; cursor: pointer; transition: transform 0.1s; position: relative;
+            justify-content: center; cursor: grab; transition: border-color 0.1s, background 0.1s; position: relative;
+            user-select: none; -webkit-user-select: none; touch-action: none;
         }
-        .inv-item:active { transform: scale(0.9); border-color: var(--accent-neon); }
-        .inv-icon { font-size: 20px; margin-bottom: 2px; position: relative; z-index: 2; text-shadow: 0 0 10px rgba(255,255,255,0.2); }
-        .inv-name { font-size: 8px; color: var(--text-main); text-align: center; word-break: break-word; hyphens: auto; position: relative; z-index: 2; line-height: 1.1;}
+        /* Легкий отклик на обычный клик, без сжатия */
+        .inv-item:active { border-color: var(--accent-neon); background: rgba(255,85,0,0.2); }
+        .inv-icon { font-size: 20px; margin-bottom: 2px; position: relative; z-index: 2; text-shadow: 0 0 10px rgba(255,255,255,0.2); pointer-events: none;}
+        .inv-name { font-size: 8px; color: var(--text-main); text-align: center; word-break: break-word; hyphens: auto; position: relative; z-index: 2; line-height: 1.1; pointer-events: none;}
 
         .inv-item.final-item { background: rgba(255, 255, 255, 0.05); border-color: #4a4a4a; box-shadow: inset 0 0 15px rgba(255,255,255,0.02); }
         .inv-item.exhausted-item { filter: grayscale(80%); opacity: 0.6; }
@@ -318,7 +337,7 @@
     </header>
 
     <main class="crafting-section">
-        <div class="slots-container">
+        <div class="slots-container" id="slots-container">
             <div class="slot" id="slot1" onclick="clearSlot(1)"></div>
             <div class="slot" id="slot2" onclick="clearSlot(2)"></div>
             <div class="slot" id="slot3" onclick="clearSlot(3)"></div>
@@ -329,7 +348,7 @@
         <button class="hint-btn" id="hint-btn" onclick="showHint()">Подсказать?</button>
     </main>
 
-    <section class="inventory-section">
+    <section class="inventory-section" id="inventory-section">
         <div class="inventory-title">
             <span>Инвентарь</span>
             <span style="font-size: 10px; cursor: pointer; color: var(--accent-neon);" onclick="clearAllSlots()">Очистить круг ❌</span>
@@ -399,27 +418,24 @@
             { id: "theme-transcendence", name: "Трансцендентность", icon: "👁️", req: 180, desc: "Открывается при 180 элементах." }
         ];
 
-        // --- МАСШТАБНАЯ БАЗА ДАННЫХ (ВСЕ РЕЦЕПТЫ ВМЕСТЕ) ---
+        // --- МАСШТАБНАЯ БАЗА ДАННЫХ ---
         const defaultItems = [
-            // Базовые
-            { id: "leather", name: "Кожа", icon: "🖤", recipe: [] },
-            { id: "sub", name: "Нижний", icon: "🧍", recipe: [] },
-            { id: "metal", name: "Металл", icon: "⛓️", recipe: [] },
-            { id: "love", name: "Любовь", icon: "❤️", recipe: [] },
-            { id: "plastic", name: "Пластик", icon: "🧊", recipe: [] },
-            { id: "ass", name: "Попка", icon: "🍑", recipe: [] },
-            { id: "electricity", name: "Электричество", icon: "⚡", recipe: [] },
-            { id: "water", name: "Вода", icon: "💧", recipe: [] },
-            { id: "tenderness", name: "Нежность", icon: "🌸", recipe: [] },
+            { id: "leather", name: "Кожа", icon: "🖤", recipe: [], desc: "Плотный материал. Основа связывающих инструментов." },
+            { id: "sub", name: "Нижний", icon: "🧍", recipe: [], desc: "Покорное тело и разум. Главный ресурс." },
+            { id: "metal", name: "Металл", icon: "⛓️", recipe: [], desc: "Холодный, тяжелый и непреклонный." },
+            { id: "love", name: "Любовь", icon: "❤️", recipe: [], desc: "Абсолютное доверие и привязанность." },
+            { id: "plastic", name: "Пластик", icon: "🧊", recipe: [], desc: "Гладкая синтетика." },
+            { id: "ass", name: "Попка", icon: "🍑", recipe: [], desc: "Мягкая, беззащитная зона, ждущая заполнения или удара." },
+            { id: "electricity", name: "Электричество", icon: "⚡", recipe: [], desc: "Энергия, заставляющая мышцы сокращаться против воли." },
+            { id: "water", name: "Вода", icon: "💧", recipe: [], desc: "Смывает следы, очищает изнутри." },
+            { id: "tenderness", name: "Нежность", icon: "🌸", recipe: [], desc: "Редкая, но самая желанная награда." },
 
-            // БДСМ-ки
             { id: "bdsm_default", name: "Базовая БДСМ-ка", icon: "👩‍💼", recipe: [], type: "mistress", personality: "default", req: 0 },
             { id: "bdsm_gentle", name: "Нежная БДСМ-ка", icon: "🧚‍♀️", recipe: [], type: "mistress", personality: "gentle", req: 20 },
             { id: "bdsm_strict", name: "Строгая БДСМ-ка", icon: "🦸‍♀️", recipe: [], type: "mistress", personality: "strict", req: 40 },
             { id: "bdsm_ai", name: "ИИ БДСМ-ка", icon: "🤖", recipe: [], type: "mistress", personality: "strict", req: 60 },
             { id: "bdsm_latex", name: "Латексная БДСМ-ка", icon: "👩‍🎤", recipe: [], type: "mistress", personality: "strict", req: 80 },
 
-            // Промежуточные тупики
             { id: "blindfold", name: "Повязка на глаза", icon: "🙈", recipe: [["leather", "strictness"]] },
             { id: "leash", name: "Поводок", icon: "🔗", recipe: [["collar", "bdsm_default"], ["collar", "metal"]] },
             { id: "birch", name: "Розги", icon: "🌾", recipe: [["crop", "strictness"]] },
@@ -436,7 +452,6 @@
             { id: "latex_hood", name: "Латексный шлем", icon: "🥷", recipe: [["latex", "blindfold"]] },
             { id: "edging", name: "Эджинг", icon: "📈", recipe: [["ruined_orgasm", "pleasure"]] },
 
-            // Крафты 
             { id: "gag", name: "Кляп", icon: "🤐", recipe: [["leather", "metal"]] },
             { id: "leather_bodysuit", name: "Кожаный бодисьют", icon: "🩱", recipe: [["leather", "sub"]] },
             { id: "chastity_belt", name: "Пояс верности", icon: "🔒", recipe: [["sub", "metal"]] },
@@ -458,7 +473,6 @@
             { id: "mind_break", name: "Слом разума", icon: "🤯💥", recipe: [["mindfuck", "pain"], ["quietness", "deprivation_chamber", "electric_torture", "orgasm", "latex"]] },
             { id: "complete_personality_collapse", name: "Полный распад", icon: "💀", recipe: [["mind_break", "sensory_overload", "imprisonment", "electric_torture", "hypersensitivity"]] },
 
-            // Новые рецепты из промта (финал)
             { id: "sweet_tears", name: "Сладкие слёзы", icon: "🥲", recipe: [["pain", "tears", "pleasure"]] },
             { id: "choking_moan", name: "Задыхающийся стон", icon: "😫💦", recipe: [["gag", "vibrator", "pain"]] },
             { id: "heavy_gear", name: "Тяжелая экипировка", icon: "🪖", recipe: [["latex", "leather", "metal"]] },
@@ -501,7 +515,6 @@
             { id: "base_materials", name: "Базовые материалы", icon: "📦", recipe: [["metal", "leather", "plastic"]] }
         ];
 
-        // Оставшиеся сотни старых связок, автоматизируем их создание:
         const extraNames = [
             { id: "nipple_clamps", name: "Зажимы для сосков", icon: "🗜️", recipe: [["metal", "pain"]] },
             { id: "vacuum_bed", name: "Вакуумная кровать", icon: "🛏️", recipe: [["metal", "latex_doll"]] },
@@ -649,11 +662,13 @@
             loadProgressFromCloud();
         }
 
-        // Загрузка через Cloud Storage
+        // Загрузка через Cloud Storage безопасно
         function loadProgressFromCloud() {
             loadProgress();
+            
             try {
-                if (tg.isVersionAtLeast && tg.isVersionAtLeast('6.9') && tg.CloudStorage) {
+                // Тщательная проверка поддержки CloudStorage
+                if (typeof tg !== 'undefined' && tg.isVersionAtLeast && tg.isVersionAtLeast('6.9') && ('CloudStorage' in tg)) {
                     tg.CloudStorage.getKeys((err, keys) => {
                         if (!err && keys && keys.includes('game_data')) {
                             tg.CloudStorage.getItem('game_data', (err, value) => {
@@ -667,8 +682,11 @@
                             });
                         } else finishInit();
                     });
-                } else finishInit();
+                } else {
+                    finishInit();
+                }
             } catch (e) {
+                console.warn("CloudStorage не поддерживается", e);
                 finishInit();
             }
         }
@@ -705,9 +723,10 @@
             localStorage.setItem('unlockedIds', JSON.stringify(unlockedItemIds));
             localStorage.setItem('achievements', JSON.stringify(unlockedAchievements));
             localStorage.setItem('settings', JSON.stringify(settings));
-            const dataToSave = JSON.stringify({ unlockedItemIds, unlockedAchievements, settings });
+            
             try {
-                if (tg.isVersionAtLeast && tg.isVersionAtLeast('6.9') && tg.CloudStorage) {
+                if (typeof tg !== 'undefined' && tg.isVersionAtLeast && tg.isVersionAtLeast('6.9') && ('CloudStorage' in tg)) {
+                    const dataToSave = JSON.stringify({ unlockedItemIds, unlockedAchievements, settings });
                     tg.CloudStorage.setItem('game_data', dataToSave);
                 }
             } catch (e) {}
@@ -767,12 +786,193 @@
                 const rarityClass = item.type === 'mistress' ? 'rarity-mistress' : `rarity-${item.rarity}`;
                 el.className = `inv-item ${rarityClass} ${item.isFinal ? 'final-item' : ''} ${isExhausted ? 'exhausted-item' : ''}`;
                 el.innerHTML = `<div class="inv-icon">${item.icon}</div><div class="inv-name">${item.name}</div>`;
-                el.onclick = () => selectItem(item);
+                
+                // DRAG AND DROP ИЛИ CLICK
+                el.onmousedown = (e) => startDrag(e, item, el);
+                el.ontouchstart = (e) => startDrag(e, item, el);
+                
                 grid.appendChild(el);
             });
         }
 
-        // --- ЛОГИКА СЛОТОВ И КРАФТА ---
+        // --- DRAG AND DROP ЛОГИКА С ФИЗИКОЙ ---
+        let draggedItem = null;
+        let dragClone = null;
+        let dragSourceEl = null;
+        let dragStartX = 0;
+        let dragStartY = 0;
+        let lastX = 0;
+        let lastY = 0;
+        let lastTime = 0;
+        let dragResetTimer = null;
+        let isDragging = false;
+
+        function startDrag(e, item, el) {
+            if (e.target.closest('.modal-overlay')) return;
+            if (e.target.closest('.hint-btn')) return;
+            
+            draggedItem = item;
+            dragSourceEl = el;
+            
+            const evt = e.touches ? e.touches[0] : e;
+            dragStartX = evt.clientX;
+            dragStartY = evt.clientY;
+            lastX = dragStartX;
+            lastY = dragStartY;
+            lastTime = Date.now();
+            isDragging = false;
+
+            document.addEventListener('mousemove', moveDrag, {passive: false});
+            document.addEventListener('touchmove', moveDrag, {passive: false});
+            document.addEventListener('mouseup', endDrag);
+            document.addEventListener('touchend', endDrag);
+        }
+
+        function moveDrag(e) {
+            if (!draggedItem) return;
+            const evt = e.touches ? e.touches[0] : e;
+            
+            if (!isDragging) {
+                const dist = Math.hypot(evt.clientX - dragStartX, evt.clientY - dragStartY);
+                if (dist > 8) { // Порог перетаскивания (отличаем клик от свайпа)
+                    isDragging = true;
+                    dragClone = dragSourceEl.cloneNode(true);
+                    dragClone.className = `inv-item drag-clone ${draggedItem.type === 'mistress' ? 'rarity-mistress' : 'rarity-'+draggedItem.rarity}`;
+                    
+                    const icon = dragClone.querySelector('.inv-icon');
+                    const name = dragClone.querySelector('.inv-name');
+                    if(icon) icon.style.fontSize = '35px';
+                    if(name) {
+                        name.style.display = 'block';
+                        name.style.fontSize = '10px';
+                    }
+
+                    document.body.appendChild(dragClone);
+                    dragSourceEl.style.opacity = '0.3';
+                    if(tg.HapticFeedback) tg.HapticFeedback.selectionChanged();
+                } else {
+                    return; // Ждем пока палец отъедет дальше
+                }
+            }
+
+            if (e.cancelable) e.preventDefault(); 
+            
+            let currentX = evt.clientX;
+            let currentY = evt.clientY;
+            
+            let now = Date.now();
+            let dt = Math.max(1, now - lastTime);
+            lastTime = now;
+
+            let dx = currentX - lastX;
+            let dy = currentY - lastY;
+            lastX = currentX;
+            lastY = currentY;
+
+            let vx = dx / dt;
+            let vy = dy / dt;
+
+            // Усиленная физика наклона (вес карточки)
+            let tiltY = Math.max(-45, Math.min(45, vx * 25));
+            let tiltX = Math.max(-45, Math.min(45, -vy * 25));
+
+            const hoveredSlotIndex = getSlotUnderPointer(currentX, currentY);
+            
+            if (hoveredSlotIndex !== -1) {
+                // МАГНИТ (Резко притягиваем в центр, отключаем наклон, включаем частицы)
+                const slot = document.getElementById(`slot${hoveredSlotIndex + 1}`);
+                const rect = slot.getBoundingClientRect();
+                const targetLeft = rect.left + rect.width / 2 - 35;
+                const targetTop = rect.top + rect.height / 2 - 45;
+                
+                dragClone.style.left = `${targetLeft}px`;
+                dragClone.style.top = `${targetTop}px`;
+                dragClone.style.transform = `perspective(1000px) rotateX(0deg) rotateY(0deg) scale(0.9)`;
+                dragClone.classList.add('ready-to-snap');
+                
+                checkMagnetHover(currentX, currentY);
+                clearTimeout(dragResetTimer);
+            } else {
+                // СВОБОДНЫЙ ПОЛЕТ
+                dragClone.style.left = `${currentX - 35}px`;
+                dragClone.style.top = `${currentY - 45}px`;
+                dragClone.style.transform = `perspective(1000px) rotateX(${tiltX}deg) rotateY(${tiltY}deg) scale(1.15)`;
+                dragClone.classList.remove('ready-to-snap');
+                
+                document.querySelectorAll('.slot').forEach(s => s.classList.remove('magnet-hover'));
+
+                clearTimeout(dragResetTimer);
+                dragResetTimer = setTimeout(() => {
+                    if(dragClone) dragClone.style.transform = `perspective(1000px) rotateX(0deg) rotateY(0deg) scale(1.15)`;
+                }, 100);
+            }
+        }
+
+        function checkMagnetHover(x, y) {
+            document.querySelectorAll('.slot').forEach(s => s.classList.remove('magnet-hover'));
+            const hoveredSlotIndex = getSlotUnderPointer(x, y);
+            if (hoveredSlotIndex !== -1) {
+                document.getElementById(`slot${hoveredSlotIndex + 1}`).classList.add('magnet-hover');
+            }
+        }
+
+        // Строгий хитбокс магнита
+        function getSlotUnderPointer(x, y) {
+            const slots = document.querySelectorAll('.slot');
+            for(let i=0; i<slots.length; i++) {
+                const rect = slots[i].getBoundingClientRect();
+                if (x >= rect.left && x <= rect.right && y >= rect.top && y <= rect.bottom) {
+                    return i;
+                }
+            }
+            return -1;
+        }
+
+        function endDrag(e) {
+            document.removeEventListener('mousemove', moveDrag);
+            document.removeEventListener('touchmove', moveDrag);
+            document.removeEventListener('mouseup', endDrag);
+            document.removeEventListener('touchend', endDrag);
+
+            if (dragSourceEl) dragSourceEl.style.opacity = '1';
+
+            if (!isDragging && draggedItem) {
+                // ЭТО БЫЛ ПРОСТО КЛИК
+                selectItem(draggedItem);
+                if(tg.HapticFeedback) tg.HapticFeedback.impactOccurred('light');
+                draggedItem = null;
+                dragSourceEl = null;
+                return;
+            }
+
+            if (!dragClone) return;
+
+            const evt = e.changedTouches ? e.changedTouches[0] : e;
+            const dropSlotIndex = getSlotUnderPointer(evt.clientX, evt.clientY);
+            
+            dragClone.remove();
+            dragClone = null;
+            isDragging = false;
+            document.querySelectorAll('.slot').forEach(s => s.classList.remove('magnet-hover'));
+
+            if (dropSlotIndex !== -1) {
+                activeSlots[dropSlotIndex] = draggedItem;
+                renderSlots();
+                
+                const slotEl = document.getElementById(`slot${dropSlotIndex + 1}`);
+                slotEl.classList.remove('snap-anim');
+                void slotEl.offsetWidth; 
+                slotEl.classList.add('snap-anim');
+                setTimeout(() => slotEl.classList.remove('snap-anim'), 600);
+                
+                resetIdleTimer();
+                if(tg.HapticFeedback) tg.HapticFeedback.impactOccurred('light');
+            }
+            
+            draggedItem = null;
+            dragSourceEl = null;
+        }
+
         function selectItem(item) {
             resetIdleTimer();
             const emptyIndex = activeSlots.findIndex(slot => slot === null);
@@ -829,7 +1029,7 @@
                 blast.style.animation = `blastAnim ${1.5 - comboSize*0.1}s ease-out forwards`;
                 document.body.appendChild(blast); setTimeout(() => blast.remove(), 1500);
 
-                tg.HapticFeedback.impactOccurred(comboSize >= 4 ? 'rigid' : 'heavy');
+                if(tg.HapticFeedback) tg.HapticFeedback.impactOccurred(comboSize >= 4 ? 'rigid' : 'heavy');
                 activeSlots = [null, null, null, null, null]; renderSlots();
 
                 if (!unlockedItemIds.includes(craftedItem.id)) {
@@ -850,13 +1050,12 @@
             } else {
                 settings.failedAttempts++;
                 saveProgress(); updateProgress();
-                tg.HapticFeedback.notificationOccurred('error'); 
+                if(tg.HapticFeedback) tg.HapticFeedback.notificationOccurred('error'); 
                 clearAllSlots(); 
                 showToast("❌ Неверная комбинация");
             }
         }
 
-        // Открытия БДСМ-ок (20, 40, 60, 80) и фонов (15, 30, 55, 75, 100, 130, 170, 180)
         function checkProgressionUnlocks() {
             const count = unlockedItemIds.filter(id => allItems.find(i=>i.id===id)?.type !== 'mistress').length;
             
@@ -866,7 +1065,7 @@
                     unlockedItemIds.push(m.id);
                     setTimeout(() => {
                         showToast(`🔥 Открыта новая БДСМ-ка: ${m.name}! Загляните в Гардероб.`, true);
-                        tg.HapticFeedback.notificationOccurred('success');
+                        if(tg.HapticFeedback) tg.HapticFeedback.notificationOccurred('success');
                     }, 1000);
                 }
             });
@@ -890,11 +1089,9 @@
         // --- СИСТЕМА ДИАЛОГОВ (Idle + Подсказки) ---
         setInterval(() => {
             idleSeconds++;
-            // АФК фраза каждую 1 минуту
             if (idleSeconds > 0 && idleSeconds % 60 === 0 && settings.enableVoice) {
                 triggerIdleQuote();
             }
-            // Кнопка подсказки через 4 минуты (240 секунд)
             if (idleSeconds >= 240 && settings.showHints) {
                 document.getElementById('hint-btn').style.display = 'block';
             }
@@ -934,7 +1131,6 @@
             allItems.forEach(item => {
                 if(!unlockedItemIds.includes(item.id) && item.recipe) {
                     item.recipe.forEach(rec => {
-                        // Только рецепты из 2-3 элементов, которые мы можем сейчас собрать
                         if(rec.length <= 3 && rec.every(ing => unlockedItemIds.includes(ing))) {
                             possibleHints.push(rec);
                         }
@@ -982,7 +1178,6 @@
             setTimeout(() => t.classList.remove('show'), 3500);
         }
 
-        // МЕНЮ: ЭНЦИКЛОПЕДИЯ
         function openCollectionMenu() {
             const list = document.getElementById('list-modal-content');
             document.getElementById('list-modal-title').innerText = "Энциклопедия";
@@ -1009,7 +1204,6 @@
             if(item) { closeModal('list-modal'); showItemDetailsModal(item, false); }
         }
 
-        // ДОСЬЕ ПРЕДМЕТА
         function showItemDetailsModal(item, isNewUnlock) {
             document.getElementById('modal-icon').innerText = item.icon;
             document.getElementById('modal-title').innerText = isNewUnlock ? (item.type === 'mistress' ? "Новая БДСМ-ка!" : "Новое открытие!") : item.name;
@@ -1049,7 +1243,6 @@
             setTimeout(() => openModal('epic-modal'), 100);
         }
 
-        // МЕНЮ: АЧИВКИ
         function openAchievementsMenu() {
             const list = document.getElementById('list-modal-content');
             list.className = "modal-scroll-area";
@@ -1075,16 +1268,13 @@
             saveProgress(); applySettings(); openWardrobeMenu();
         }
 
-        // МЕНЮ: ГАРДЕРОБ И НАСТРОЙКИ
         function openWardrobeMenu() {
             const list = document.getElementById('list-modal-content');
             document.getElementById('list-modal-title').innerText = "Гардероб и Настройки";
             list.className = "modal-scroll-area"; 
             let html = "";
 
-            // Настройки (Тумблеры)
             html += `<div class="settings-section-title">Настройки интерфейса</div>`;
-            
             html += `
             <div class="toggle-row">
                 <div>
@@ -1116,7 +1306,6 @@
             </div>
             `;
 
-            // БДСМ-ки
             html += `<div class="settings-section-title" style="margin-top:20px;">Смена БДСМ-ки</div>`;
             const mistresses = allItems.filter(i => unlockedItemIds.includes(i.id) && i.type === 'mistress');
             mistresses.forEach(m => {
@@ -1132,7 +1321,6 @@
                     </div>`;
             });
 
-            // Фоны
             html += `<div class="settings-section-title" style="margin-top:20px;">Скины комнаты (Фоны)</div>`;
             backgroundsDb.forEach(bg => {
                 const isUnlocked = settings.unlockedBgs.includes(bg.id);
@@ -1157,12 +1345,12 @@
             settings.currentMistressId = id; saveProgress(); applySettings(); openWardrobeMenu();
             const activeM = allItems.find(i=>i.id===id);
             if(settings.enableVoice) triggerBubble(`Слушай меня внимательно. Теперь я твоя ${activeM.name}.`);
-            tg.HapticFeedback.impactOccurred('light');
+            if(tg.HapticFeedback) tg.HapticFeedback.impactOccurred('light');
         }
 
         function selectBackground(id) {
             settings.currentTheme = id; saveProgress(); applySettings(); openWardrobeMenu();
-            tg.HapticFeedback.impactOccurred('medium');
+            if(tg.HapticFeedback) tg.HapticFeedback.impactOccurred('medium');
         }
 
         window.onload = initGame;
