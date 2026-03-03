@@ -806,8 +806,16 @@
         let lastTime = 0;
         let dragResetTimer = null;
         let isDragging = false;
+        let ignoreMouse = false; // Блокировка фантомных двойных кликов на мобилках
 
         function startDrag(e, item, el) {
+            // Игнорируем фантомный клик мышью, если до этого сработал тач (палец)
+            if (e.type === 'touchstart') {
+                ignoreMouse = true;
+            } else if (e.type === 'mousedown' && ignoreMouse) {
+                return;
+            }
+
             if (e.target.closest('.modal-overlay')) return;
             if (e.target.closest('.hint-btn')) return;
             
@@ -934,10 +942,15 @@
             document.removeEventListener('mouseup', endDrag);
             document.removeEventListener('touchend', endDrag);
 
+            // Через полсекунды после отпускания пальца разрешаем мышь обратно
+            if (e.type === 'touchend') {
+                setTimeout(() => { ignoreMouse = false; }, 500);
+            }
+
             if (dragSourceEl) dragSourceEl.style.opacity = '1';
 
             if (!isDragging && draggedItem) {
-                // ЭТО БЫЛ ПРОСТО КЛИК
+                // ЭТО БЫЛ ПРОСТО КЛИК (одинарный, так как мышь заблокирована)
                 selectItem(draggedItem);
                 if(tg.HapticFeedback) tg.HapticFeedback.impactOccurred('light');
                 draggedItem = null;
