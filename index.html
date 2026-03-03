@@ -34,7 +34,6 @@
         .bg-layer { position: absolute; top: 0; left: 0; right: 0; bottom: 0; z-index: -2; transition: opacity 1s; }
         .bg-fx-layer { position: absolute; top: -50%; left: -50%; width: 200%; height: 200%; z-index: -1; pointer-events: none; transition: opacity 1s; }
         
-        /* Базовые фоны */
         body.theme-default .bg-layer { background-image: linear-gradient(rgba(0, 229, 255, 0.05) 1px, transparent 1px), linear-gradient(90deg, rgba(0, 229, 255, 0.05) 1px, transparent 1px); background-size: 30px 30px; }
         body.theme-default .bg-fx-layer { background: radial-gradient(circle at 50% 50%, rgba(255, 85, 0, 0.08) 0%, transparent 20%), radial-gradient(circle at 20% 80%, rgba(0, 229, 255, 0.05) 0%, transparent 20%); animation: gridScan 15s infinite linear; }
         
@@ -70,7 +69,7 @@
         @keyframes etherPulse { 0% { transform: scale(1) rotate(0deg); opacity: 0.6; } 100% { transform: scale(1.1) rotate(5deg); opacity: 1; } }
         @keyframes goldenRain { 0% { transform: translateY(180px); opacity: 0;} 50% {opacity: 1;} 100% { transform: translateY(0); opacity: 0;} }
 
-        /* Шапка и Комикс-пузырь */
+        /* Шапка */
         header {
             display: flex; align-items: center; justify-content: space-between; padding: 15px 15px;
             background: linear-gradient(180deg, rgba(10,10,12,0.95) 0%, transparent 100%);
@@ -118,7 +117,7 @@
         .slot { flex: 1; aspect-ratio: 1 / 1; max-width: 70px; background: var(--panel-bg); border: 1px dashed var(--border-color); border-radius: 8px; display: flex; flex-direction: column; align-items: center; justify-content: center; font-size: 24px; transition: all 0.3s; cursor: pointer; position: relative; overflow: visible; }
         .slot-name { font-size: 8px; position: absolute; bottom: 4px; color: var(--text-muted); text-align: center; width: 100%; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; z-index: 5; pointer-events: none;}
 
-        /* УНИКАЛЬНАЯ АНИМАЦИЯ 3D-КАРТОЧКИ ПРИ ПЕРЕТАСКИВАНИИ */
+        /* DRAG AND DROP */
         .drag-clone {
             position: fixed !important; pointer-events: none !important; z-index: 9999 !important;
             width: 70px !important; height: 90px !important; 
@@ -341,7 +340,6 @@
                 <div class="progress-text" id="progress-text">0 / 0</div>
                 <div class="fails-text" id="fails-text">Ошибок: 0</div>
             </div>
-            <button class="icon-btn" style="font-size:10px; font-weight:bold; width:auto; padding:0 8px; color: var(--accent-neon); border-color: var(--accent-neon);" onclick="openSupportMenu()">БДСМ-ка</button>
             <button class="icon-btn" onclick="openAchievementsMenu()">🏆</button>
             <button class="icon-btn" onclick="openCollectionMenu()">📖</button>
         </div>
@@ -439,7 +437,7 @@
             { id: "theme-transcendence", name: "Трансцендентность", icon: "👁️", req: 180, desc: "Открывается при 180 элементах." }
         ];
 
-        // --- МАСШТАБНАЯ БАЗА ДАННЫХ ---
+        // --- МОНОЛИТНАЯ БАЗА ДАННЫХ СО ВСЕМИ РЕЦЕПТАМИ ИЗ ДОКУМЕНТА ---
         const defaultItems = [
             { id: "leather", name: "Кожа", icon: "🖤", recipe: [], desc: "Грубый, пахнущий выделкой материал. Историческая основа классического бондажа и дисциплинарных инструментов. Плотно облегает и оставляет следы." },
             { id: "sub", name: "Нижний", icon: "🧍", recipe: [], desc: "Сабмиссив. Покорное тело и пластичный разум, готовые к любым воздействиям. Главный ресурс и холст в руках Госпожи." },
@@ -451,50 +449,160 @@
             { id: "water", name: "Вода", icon: "💧", recipe: [], desc: "Стихия очищения и страха. Может нежно смыть пот после сессии, а может лишить возможности дышать." },
             { id: "tenderness", name: "Нежность", icon: "🌸", recipe: [], desc: "Редкая, но самая желанная награда. Мягкие поглаживания по воспаленной коже, возвращающие нижнего в реальность." },
 
-            { id: "bdsm_default", name: "Базовая БДСМ-ка", icon: "👩‍💼", recipe: [], type: "mistress", personality: "default", req: 0, desc: "Классическая Наставница. Справедливая, требовательная, не впадающая в крайности. Держит идеальный баланс между кнутом и пряником." },
-            { id: "bdsm_gentle", name: "Нежная БДСМ-ка", icon: "🧚‍♀️", recipe: [], type: "mistress", personality: "gentle", req: 20, desc: "Мамми-дом. Обожает похвалу, глубокий афтеркеа и мягкий контроль. Её методы заставят тебя плакать от переизбытка ласки." },
-            { id: "bdsm_strict", name: "Строгая БДСМ-ка", icon: "🦸‍♀️", recipe: [], type: "mistress", personality: "strict", req: 40, desc: "Хладнокровная садистка. Питается твоими слезами, обожает телесные наказания и требует абсолютного, беспрекословного подчинения." },
-            { id: "bdsm_ai", name: "ИИ БДСМ-ка", icon: "🤖", recipe: [], type: "mistress", personality: "strict", req: 60, desc: "Нейросеть, обученная максимизировать твою покорность через математически точный расчет болевых порогов и электростимуляцию." },
-            { id: "bdsm_latex", name: "Латексная БДСМ-ка", icon: "👩‍🎤", recipe: [], type: "mistress", personality: "strict", req: 80, desc: "Богиня сенсорной депривации. Закована в скрипящий черный латекс, обожает вакуумные кровати и контроль дыхания." },
+            { id: "bdsm_default", name: "Базовая БДСМ-ка", icon: "👩‍💼", recipe: [["strictness", "love"], ["switch", "sadism"]], type: "mistress", personality: "default", req: 0, desc: "Классическая Наставница. Справедливая, требовательная, не впадающая в крайности. Держит идеальный баланс между кнутом и пряником." },
+            { id: "bdsm_gentle", name: "Нежная БДСМ-ка", icon: "🧚‍♀️", recipe: [["bdsm_default", "love", "tenderness"]], type: "mistress", personality: "gentle", req: 20, desc: "Мамми-дом. Обожает похвалу, глубокий афтеркеа и мягкий контроль. Её методы заставят тебя плакать от переизбытка ласки." },
+            { id: "bdsm_strict", name: "Строгая БДСМ-ка", icon: "🦸‍♀️", recipe: [["bdsm_default", "pain", "metal_plug"], ["bdsm_default", "strap_on"]], type: "mistress", personality: "strict", req: 40, desc: "Хладнокровная садистка. Питается твоими слезами, обожает телесные наказания и требует абсолютного, беспрекословного подчинения." },
+            { id: "bdsm_ai", name: "ИИ БДСМ-ка", icon: "🤖", recipe: [["bdsm_default", "under_ai_control"], ["bdsm_default", "hitech_suit"]], type: "mistress", personality: "strict", req: 60, desc: "Нейросеть, обученная максимизировать твою покорность через математически точный расчет болевых порогов и электростимуляцию." },
+            { id: "bdsm_latex", name: "Латексная БДСМ-ка", icon: "👩‍🎤", recipe: [["bdsm_default", "latex"]], type: "mistress", personality: "strict", req: 80, desc: "Богиня сенсорной депривации. Закована в скрипящий черный латекс, обожает вакуумные кровати и контроль дыхания." },
 
-            { id: "blindfold", name: "Повязка на глаза", icon: "🙈", recipe: [["leather", "strictness"]], desc: "Блокирует зрение, погружая во тьму. Обостряет слух и осязание, заставляя вздрагивать от каждого шороха и ожидания удара." },
-            { id: "leash", name: "Поводок", icon: "🔗", recipe: [["collar", "bdsm_default"], ["collar", "metal"]], desc: "Прочный кожаный ремень. Физическое продолжение Её воли. Легкое натяжение означает приказ, сопротивление — удушье." },
-            { id: "birch", name: "Розги", icon: "🌾", recipe: [["crop", "strictness"]], desc: "Тонкие, гибкие прутья. Рассекают воздух со свистом и оставляют на бедрах тонкие, горящие огнем красные полосы." },
-            { id: "puppy_mask", name: "Маска щенка", icon: "🐶", recipe: [["leather", "good_sub"]], desc: "Петплей. Кожаный шлем, полностью стирающий человеческое Эго. Ты больше не человек, ты — её верный, послушный песик." },
-            { id: "ice_shower", name: "Ледяной душ", icon: "🚿", recipe: [["water", "pain"]], desc: "Резкий температурный шок. Ледяные струи бьют по разгоряченной от порки коже, заставляя тело судорожно сжиматься." },
-            { id: "points_system", name: "Система баллов", icon: "📊", recipe: [["strictness", "upbringing"]], desc: "Холодный математический учет проступков. За каждую ошибку начисляются баллы, которые позже конвертируются в удары плетью." },
-            { id: "acceptance_of_pain", name: "Принятие боли", icon: "🧘", recipe: [["masochism", "obedience"]], desc: "Глубокое психологическое состояние. Боль больше не пугает — она становится языком, на котором с тобой говорит Госпожа." },
-            { id: "catharsis", name: "Катарсис", icon: "🕊️", recipe: [["tears", "pain"]], desc: "Очищение души через телесные муки. Момент, когда после жестокой экзекуции внутри остается лишь звенящая, светлая пустота." },
-            { id: "discipline", name: "Дисциплина", icon: "📐", recipe: [["strictness", "upbringing"], ["pain", "upbringing"]], desc: "Идеальная осанка, взгляд в пол, беспрекословное выполнение команд. Стержень, на котором держится воспитание нижнего." },
-            { id: "breakdown", name: "Срыв", icon: "💥", recipe: [["long_abstinence", "vibrator"]], desc: "Потеря рассудка после месяцев запрета. Когда тело трясет от перевозбуждения, а мозг молит лишь об одном — кончить." },
-            { id: "bleeding", name: "Кровоточивость", icon: "🩸🤕", recipe: [["pain", "crop"]], desc: "Флагелляция до крови. Маленькие алые капли, выступающие на коже после особенно сильных ударов. Знак высшей самоотдачи." },
-            { id: "aftercare", name: "Афтеркеа", icon: "🫂", recipe: [["tenderness", "love"]], desc: "Самая важная часть сессии. Объятия, плед и тихие разговоры, помогающие сабмиссиву безопасно выйти из саб-спейса." },
-            { id: "cage", name: "Клетка", icon: "🗄️", recipe: [["metal", "imprisonment"]], desc: "Тесная металлическая конструкция, не позволяющая выпрямиться. Заставляет часами сидеть в неудобной позе, осознавая свою беспомощность." },
-            { id: "latex_hood", name: "Латексный шлем", icon: "🥷", recipe: [["latex", "blindfold"]], desc: "Глухой капюшон из резины, стягивающий голову. Оставляет лишь крошечные отверстия для дыхания, создавая чувство полной изоляции." },
-            { id: "edging", name: "Эджинг", icon: "📈", recipe: [["ruined_orgasm", "pleasure"]], desc: "Длительное балансирование на грани оргазма. Тебя доводят до пика и останавливаются, превращая наслаждение в сладкую, невыносимую пытку." },
-
-            { id: "gag", name: "Кляп", icon: "🤐", recipe: [["leather", "metal"]], desc: "Шарик или трубка, глубоко вдавливающиеся в рот. Мешает сглотнуть слюну, растягивает челюсти и превращает любые мольбы о пощаде в жалкое мычание." },
             { id: "leather_bodysuit", name: "Кожаный бодисьют", icon: "🩱", recipe: [["leather", "sub"]], desc: "Тяжелая кожа, зашнурованная на спине. Стягивает грудь и бедра, заставляя постоянно чувствовать свою скованность и принадлежность." },
+            { id: "gag", name: "Кляп", icon: "🤐", recipe: [["leather", "metal"]], desc: "Шарик или трубка, глубоко вдавливающиеся в рот. Мешает сглотнуть слюну, растягивает челюсти и превращает любые мольбы о пощаде в жалкое мычание." },
             { id: "chastity_belt", name: "Пояс верности", icon: "🔒", recipe: [["sub", "metal"]], desc: "Металлическая клетка, запирающая гениталии. Физическое доказательство того, что твое удовольствие тебе больше не принадлежит." },
             { id: "pleasure", name: "Наслаждение", icon: "✨", recipe: [["sub", "love"]], desc: "Дрожь, пробегающая по телу от правильного прикосновения. То, ради чего терпятся унижения и боль." },
             { id: "plastic_chastity", name: "Пластиковый пояс верности", icon: "🩲", recipe: [["sub", "plastic"]], desc: "Прозрачная клетка. Унизительна тем, что позволяет Госпоже наблюдать, как твое тело тщетно реагирует на стимуляцию." },
-            { id: "pain", name: "Боль", icon: "🩸", recipe: [["love", "strictness"], ["sub", "crop", "bdsm_default"]], desc: "Острый, пронзающий нервы сигнал. В руках умелой садистки боль конвертируется в чистый эндорфиновый экстаз." },
+            { id: "metal_chastity", name: "Металлический пояс верности", icon: "⛓️", recipe: [["chastity_belt", "metal"]], desc: "Тяжелая, стальная клетка. Надежный замок, ключ от которого висит на шее твоей Госпожи." },
             { id: "vibrator", name: "Вибратор", icon: "🪄", recipe: [["metal", "plastic"]], desc: "Жужжащий моторчик. Может быть источником нежного поощрения или инструментом жесточайшей пытки при гиперчувствительности." },
             { id: "strictness", name: "Строгость", icon: "📏", recipe: [["metal", "love"]], desc: "Холодные правила, строгий взгляд и ноль поблажек. Любое непослушание будет немедленно и жестоко наказано." },
-            { id: "metal_plug", name: "Металлическая пробка", icon: "🔌", recipe: [["metal", "sub", "ass"]], desc: "Тяжелая, ледяная сталь, растягивающая изнутри. Заставляет чувствовать свое подчинение при каждом шаге." },
-            { id: "phallus", name: "Фалос", icon: "🍆", recipe: [["love", "plastic"]], desc: "Крупная синтетическая игрушка для растягивания границ дозволенного и глубокого проникновения." },
             { id: "crop", name: "Стек", icon: "🦯", recipe: [["plastic", "pain"]], desc: "Короткий, упругий хлыст. Издает звонкий хлопок и оставляет на коже четкие, быстро краснеющие следы." },
-            
-            { id: "orgasm", name: "Оргазм", icon: "🎆", recipe: [["chastity_belt", "pleasure", "vibrator"], ["vibrator", "chastity_belt"], ["obedience", "good_sub"]], desc: "Долгожданная разрядка, скручивающая тело в спазмах. Привилегия, которую нужно заслужить хорошим поведением." },
+            { id: "pain", name: "Боль", icon: "🩸", recipe: [["love", "strictness"], ["sub", "crop", "bdsm_default"]], desc: "Острый, пронзающий нервы сигнал. В руках умелой садистки боль конвертируется в чистый эндорфиновый экстаз." },
             { id: "torture", name: "Пытка", icon: "🔥", recipe: [["vibrator", "pain"], ["imprisonment", "pain"]], desc: "Методичное доведение до грани. Процесс, когда наслаждение и агония сливаются в единую пылающую массу." },
             { id: "ruined_orgasm", name: "Разрушенный оргазм", icon: "🥀", recipe: [["vibrator", "strictness"], ["orgasm", "strictness"]], desc: "Остановка стимуляции за долю секунды до финала. Оставляет тяжелое, пульсирующее чувство неудовлетворенности внизу живота." },
-            
-            { id: "hitech_suit", name: "High-Tech костюм", icon: "🦾", recipe: [["leather_bodysuit", "vibrator", "metal", "plastic", "electricity"]], desc: "Ультимативный бондаж. Костюм с десятками электродов и датчиков. Управляется удаленно, читая твой пульс." },
-            { id: "hyper_orgasm", name: "Гипероргазм", icon: "🤯", recipe: [["vibrator", "electro_stimulator", "metal_plug", "pain", "orgasm"]], desc: "Непрекращающаяся, многократная конвульсия всего тела, вызванная перегрузкой нервной системы. Разум отключается." },
-            { id: "mind_break", name: "Слом разума", icon: "🤯💥", recipe: [["mindfuck", "pain"], ["quietness", "deprivation_chamber", "electric_torture", "orgasm", "latex"]], desc: "Состояние, когда личность ломается. Ты перестаешь сопротивляться и становишься абсолютно пустой, послушной оболочкой." },
-            { id: "complete_personality_collapse", name: "Полный распад", icon: "💀", recipe: [["mind_break", "sensory_overload", "imprisonment", "electric_torture", "hypersensitivity"]], desc: "Финальная стадия подчинения. Эго уничтожено навсегда. Остались только базовые рефлексы и слепое боготворение Хозяйки." },
+            { id: "control", name: "Контроль", icon: "🎛️", recipe: [["vibrator", "crop"], ["quietness", "obedience"]], desc: "Она решает, когда ты дышишь, когда спишь, когда испытываешь боль и когда кончаешь." },
+            { id: "obedience", name: "Повиновение", icon: "🧎", recipe: [["vibrator", "ruined_orgasm"], ["strictness", "sub"]], desc: "Моментальное, рефлекторное исполнение любого приказа без вопросов и сомнений." },
+            { id: "vibrating_plug", name: "Пробка с вибрацией", icon: "📳", recipe: [["vibrator", "metal_plug"], ["plastic_plug", "vibrator"]], desc: "Игрушка, глубоко массирующая простату. Гудение внутри отдается дрожью во всем теле." },
+            { id: "drool", name: "Слюни", icon: "🤤", recipe: [["strictness", "gag"]], desc: "Вязкие капли, стекающие по подбородку из-за кляпа. Признак того, что ты полностью потерял лицо." },
+            { id: "orgasm_control", name: "Контроль оргазма", icon: "🛑", recipe: [["strictness", "chastity_belt"], ["torture", "orgasm"]], desc: "Право на финал нужно заслужить. Ты можешь умолять часами, но решать будет только Она." },
+            { id: "spanking", name: "Порка", icon: "👏", recipe: [["strictness", "pain"], ["punishment", "crop"]], desc: "Ритмичные удары ладонью или ремнем по ягодицам. Разогревает кровь и готовит к более жестким игрушкам." },
+            { id: "large_plug", name: "Большая пробка", icon: "🏺", recipe: [["strictness", "metal_plug"]], desc: "Экстремальный размер. Требует долгой подготовки и смазки, растягивает сфинктер до предела." },
+            { id: "whip", name: "Плеть", icon: "💥", recipe: [["crop", "leather"]], desc: "Тяжелый многохвостый инструмент. Оставляет на спине кровавые полосы и заставляет молить о стоп-слове." },
+            { id: "upbringing", name: "Воспитание", icon: "🎓", recipe: [["crop", "femboy"], ["torture", "punishment"]], desc: "Долгий процесс прививания правильных манер. Ломка эго и выстраивание идеального нижнего." },
+            { id: "good_sub", name: "Хороший нижний", icon: "🐶", recipe: [["crop", "docility"]], desc: "Тот, кто знает свое место. Кто принимает удар с благодарностью и целует руку, держащую плеть." },
+            { id: "tears", name: "Слёзы", icon: "😢", recipe: [["crop", "pain"], ["punishment", "pain"]], desc: "Следы искренности. Когда терпеть больше невозможно, и эмоции выходят наружу." },
+            { id: "sadism", name: "Садизм", icon: "😈", recipe: [["torture", "love"]], desc: "Получение искреннего удовольствия от причинения боли партнеру, который об этом просит." },
+            { id: "mouth_gag", name: "Расширитель для рта", icon: "😬", recipe: [["torture", "gag"]], desc: "Металлический или силиконовый каркас. Не дает закрыть челюсть, оставляя рот открытым для любых действий." },
+            { id: "masochism", name: "Мазохизм", icon: "🩸", recipe: [["torture", "pleasure"], ["bdsm", "pain"]], desc: "Поиск экстаза в страданиях. Когда каждый синяк воспринимается как награда." },
+            { id: "disappointment", name: "Разочарование", icon: "😞", recipe: [["torture", "ruined_orgasm"]], desc: "Тяжелый вздох Госпожи, когда нижний не выдерживает боли или нарушает правила сессии." },
+            { id: "compliance", name: "Послушание", icon: "🫡", recipe: [["torture", "obedience"], ["quietness", "strictness"]], desc: "Идеальная покорность. Выполнение команд не из страха, а из глубокого желания угодить." },
+            { id: "breath_control", name: "Контроль дыхания", icon: "😮‍💨", recipe: [["torture", "latex"]], desc: "Игра на грани кислородного голодания. Она решает, когда ты сделаешь следующий вдох." },
+            { id: "hypersensitivity", name: "Гиперчувствительность", icon: "✨", recipe: [["torture", "electro_stimulator"]], desc: "Состояние, когда кожа горит. Каждое дуновение воздуха или легкое касание ощущается как удар." },
+            { id: "electric_torture", name: "Пытка током", icon: "🔌", recipe: [["ruined_orgasm", "electricity"], ["electro_shocker", "pain"]], desc: "Замыкание нервной системы. Разряды тока заставляют тело выгибаться дугой в путах." },
+            { id: "robo_session", name: "Робо-сессия", icon: "🤖", recipe: [["ruined_orgasm", "hitech_suit"], ["bdsm_ai", "control"]], desc: "Сессия под контролем машины. Алгоритм не знает стоп-слова, он просто выполняет программу наказания." },
+            { id: "imprisonment", name: "Заточение", icon: "⛓️", recipe: [["ruined_orgasm", "deprivation_chamber"], ["bdsm_room", "quietness"]], desc: "Оставлен в одиночестве на долгие часы или дни. В клетке, в темноте, наедине со своими мыслями." },
+            { id: "seed", name: "Семя", icon: "🥛", recipe: [["ruined_orgasm", "orgasm"]], desc: "Густая, мутная жидкость. Результат долгих месяцев локтобера и эджинга. Принадлежит только Ей." },
+            { id: "prostate_fluid", name: "Жидкость простаты", icon: "💧", recipe: [["ruined_orgasm", "prostate_orgasm"]], desc: "Прозрачные капли, выделяющиеся от глубокой анальной стимуляции, без участия основного органа." },
+            { id: "humiliation", name: "Унижение", icon: "📉", recipe: [["ruined_orgasm", "spit_in_mouth", "bdsm_default"]], desc: "Растоптанная гордость. Тебя заставляют делать вещи, о которых стыдно даже думать, и тебе это нравится." },
+            { id: "lack_of_breath", name: "Нехватка дыхания", icon: "😵", recipe: [["ruined_orgasm", "breath_deprivation_mask"]], desc: "Паника в груди, потемнение в глазах. Отчаянная попытка втянуть хоть каплю кислорода." },
+            { id: "plaything", name: "Вещь для утех", icon: "🧸", recipe: [["ruined_orgasm", "latex_doll"]], desc: "Ты больше не человек с именем. Ты — дырка, кожа и мясо, созданные для её удовольствия." },
+            { id: "submissive", name: "Сабмессив", icon: "🧎‍♂️", recipe: [["control", "sub"], ["slavery_contract", "plaything"]], desc: "Тот, чья главная цель в жизни — служить. Кто находит истинную свободу в полном подчинении." },
+            { id: "relationship", name: "Отношения", icon: "💍", recipe: [["control", "love"], ["bdsm", "love"]], desc: "Связь крепче стальных цепей (TPE/D/s). Когда БДСМ выходит за рамки спальни и становится образом жизни." },
+            { id: "remote_vibrator", name: "Дистанц. вибратор", icon: "📱", recipe: [["control", "vibrating_plug"], ["control", "vibrator"]], desc: "Игрушка внутри тебя, пультом от которой она управляет со смартфона, находясь в другой комнате." },
+            { id: "collar", name: "Ошейник", icon: "🐕", recipe: [["control", "obedience"]], desc: "Главный символ принадлежности. Кольцо на шее, доказывающее всем, что у тебя есть Владелица." },
+            { id: "headphones", name: "Наушники", icon: "🎧", recipe: [["control", "quietness"]], desc: "Используются для сенсорной депривации (белый шум) или для прослушивания гипнотических аудио-приказов." },
+            { id: "bdsm_room", name: "БДСМ комната", icon: "🚪", recipe: [["control", "imprisonment"]], desc: "Подземелье боли и радости. Кресты Сент-Эндрю, крюки в потолке, клетки и запах кожи." },
+            { id: "female_orgasm", name: "Оргазм по женски", icon: "🌺", recipe: [["control", "prostate_fluid"]], desc: "Многократные волны содроганий, достигаемые исключительно через стимуляцию простаты." },
+            { id: "public_session", name: "Сессия в людном месте", icon: "🏙️", recipe: [["control", "remote_vibrator"]], desc: "Риск быть замеченным. Ношение хвоста, пробок или ошейника под одеждой на улице или в ресторане." },
+            { id: "obsession", name: "Одержимость", icon: "😵‍💫", recipe: [["obedience", "love"]], desc: "Болезненная зависимость от её внимания. Ты физически не можешь жить без её приказов и унижений." },
+            { id: "orgasm_refusal", name: "Отказ от оргазма", icon: "🙅", recipe: [["obedience", "chastity_belt"]], desc: "Добровольное лишение себя разрядки ради того, чтобы доказать свою преданность Хозяйке." },
+            { id: "orgasm_demo", name: "Демонстрация оргазма", icon: "🎦", recipe: [["obedience", "orgasm"]], desc: "Разрешение кончить, но с условием: сделать это на камеру или перед другими людьми." },
+            { id: "swallowing", name: "Сглатывание", icon: "🧃", recipe: [["obedience", "spit"]], desc: "Глотание её слюны или своих же соков. Унизительный, но бесконечно возбуждающий акт подчинения." },
+            { id: "bdsm", name: "БДСМ", icon: "🖤⛓️", recipe: [["bdsm_default", "love"]], desc: "Связывание, дисциплина, доминирование, садизм и мазохизм. Не просто аббревиатура, а стиль жизни." },
+            { id: "strap_on", name: "Страпон", icon: "🍆", recipe: [["bdsm_default", "strictness", "enema"]], desc: "Её инструмент для того, чтобы показать, кто здесь главный. Проникает глубоко, заставляя забыть о гордости." },
+            { id: "facesitting", name: "Сесть на лицо", icon: "🪑", recipe: [["bdsm_default", "cunnilingus", "breath_control"]], desc: "Она тяжело садится на твое лицо, перекрывая воздух. Ты дышишь только тогда, когда она немного приподнимается." },
+            { id: "kiss", name: "Поцелуй", icon: "💋", recipe: [["drool", "love"]], desc: "Редкий момент близости. Соприкосновение губ, которое в рамках сессии значит больше, чем секс." },
+            { id: "embarrassment", name: "Смущение", icon: "😳", recipe: [["phallus", "sub"]], desc: "Румянец на щеках от осознания того, в какой унизительной и грязной позе ты сейчас находишься." },
+            { id: "ouch", name: "Ауч!", icon: "🤕", recipe: [["sub", "pain"]], desc: "Первая резкая реакция на удар. Еще не привыкание, но уже четкое понимание того, что шутки кончились." },
+            { id: "ah_stop", name: "Ааа! Хватит...", icon: "😫", recipe: [["sub", "pain", "pain"]], desc: "Мольбы об остановке, когда боль начинает накапливаться. Но стоп-слово еще не произнесено." },
+            { id: "cant_take_it", name: "Я больше...", icon: "😭", recipe: [["sub", "pain", "pain", "pain"]], desc: "Слезы текут ручьем, голос срывается. Тело извивается в путах, пытаясь уйти от очередного удара." },
+            { id: "loss_of_consciousness", name: "Потеря сознания", icon: "😵", recipe: [["sub", "pain", "pain", "pain", "pain"], ["pain_threshold", "exceeding_pain_threshold"]], desc: "Перегрузка рецепторов. Предохранитель в мозгу перегорает, и организм отключается, погружаясь в спасительную тьму." },
+            { id: "blindfold", name: "Повязка на глаза", icon: "🙈", recipe: [["leather", "strictness"]], desc: "Плотно облегает глаза, погружая во тьму. Обостряет все остальные чувства и лишает контроля над ситуацией." },
+            { id: "leash", name: "Поводок", icon: "🔗", recipe: [["collar", "bdsm_default"], ["collar", "metal"]], desc: "Прочный ремень, соединяющий шею раба с рукой его владелицы. Натяжение означает приказ." },
+            { id: "birch", name: "Розги", icon: "🌾", recipe: [["crop", "strictness"]], desc: "Тонкие прутья, рассекающие воздух со свистом и оставляющие тонкие, жгучие полосы на теле." },
+            { id: "puppy_mask", name: "Маска щенка", icon: "🐶", recipe: [["leather", "good_sub"]], desc: "Кожаный шлем с ушками, стирающий человеческую личность и превращающий надевшего в послушное животное." },
+            { id: "ice_shower", name: "Ледяной душ", icon: "🚿", recipe: [["water", "pain"]], desc: "Резкий температурный шок. Ледяные струи бьют по разгоряченной от порки коже, заставляя тело судорожно сжиматься." },
+            { id: "points_system", name: "Система баллов", icon: "📊", recipe: [["strictness", "upbringing"]], desc: "Абсолютный математический учет проступков. За каждую ошибку начисляются баллы, которые затем превращаются в удары." },
+            { id: "acceptance_of_pain", name: "Принятие боли", icon: "🧘", recipe: [["masochism", "obedience"]], desc: "Полное смирение перед страданиями. Боль больше не пугает, она становится языком общения с Госпожей." },
+            { id: "catharsis", name: "Катарсис", icon: "🕊️", recipe: [["tears", "pain"]], desc: "Очищение души через телесные муки. Светлая, звенящая пустота внутри после жестокой экзекуции." },
+            { id: "discipline", name: "Дисциплина", icon: "📐", recipe: [["strictness", "upbringing"], ["pain", "upbringing"]], desc: "Идеальная осанка и мгновенное выполнение команд. Стержень, на котором держится всё воспитание." },
+            { id: "breakdown", name: "Срыв", icon: "💥", recipe: [["long_abstinence", "vibrator"]], desc: "Потеря контроля после месяцев запрета. Когда тело трясет от перевозбуждения, а мозг молит лишь об одном." },
+            { id: "bleeding", name: "Кровоточивость", icon: "🩸🤕", recipe: [["pain", "crop"]], desc: "Маленькие алые капли, выступающие на коже после сильных ударов. Знак высшей самоотдачи." },
+            { id: "aftercare", name: "Афтеркеа", icon: "🫂", recipe: [["tenderness", "love"]], desc: "Объятия, плед и тихие разговоры, помогающие сабмиссиву безопасно выйти из саб-спейса после сессии." },
+            { id: "cage", name: "Клетка", icon: "🗄️", recipe: [["metal", "imprisonment"]], desc: "Тесная металлическая конструкция. Заставляет часами сидеть в неудобной позе, осознавая свою беспомощность." },
+            { id: "latex_hood", name: "Латексный шлем", icon: "🥷", recipe: [["latex", "blindfold"]], desc: "Глухой капюшон из резины, стягивающий голову. Оставляет лишь крошечные отверстия для дыхания." },
+            { id: "edging", name: "Эджинг", icon: "📈", recipe: [["ruined_orgasm", "pleasure"]], desc: "Балансирование на грани оргазма. Тебя доводят до пика и останавливаются, превращая наслаждение в пытку." },
+            { id: "nipple_clamps", name: "Зажимы для сосков", icon: "🗜️", recipe: [["metal", "pain"]], desc: "Винтовые или пружинные зажимы. Превращают грудь в эпицентр острой, пульсирующей боли." },
+            { id: "vacuum_bed", name: "Вакуумная кровать", icon: "🛏️", recipe: [["metal", "latex_doll"]], desc: "Латексный мешок. При откачке воздуха плотно облепляет тело, превращая саба в недвижимую, глянцевую статую." },
+            { id: "plastic_plug", name: "Пластиковая пробка", icon: "💎", recipe: [["plastic", "sub", "ass"]], desc: "Легкая и прозрачная. Отлично подходит для длительного ношения и публичного унижения." },
+            { id: "latex", name: "Латекс", icon: "🧤", recipe: [["plastic", "sub", "love"]], desc: "Фетиш-материал. Блестящий, скрипящий и непроницаемый. Вторая кожа, заставляющая потеть и подчиняться." },
+            { id: "deprivation_suit", name: "Депривационный костюм", icon: "🥷", recipe: [["leather_bodysuit", "leather"]], desc: "Костюм, полностью изолирующий от внешнего мира. Ни зрения, ни слуха, лишь ожидание её действий." },
+            { id: "sex_slave", name: "Секс раб", icon: "⛓️‍💥", recipe: [["leather_bodysuit", "sub"]], desc: "Статус абсолютного подчинения. Твое тело — это её игрушка, и ты с радостью принимаешь эту роль." },
+            { id: "silence", name: "Молчание", icon: "😶", recipe: [["gag", "sub"], ["quietness", "sub"]], desc: "Запрет на речь. Ты имеешь право издавать звуки только тогда, когда тебе разрешат." },
+            { id: "plastic_gag", name: "Пластиковый кляп", icon: "🎾", recipe: [["gag", "plastic"]], desc: "Твердый шарик, который не размягчается от слюны. Держит челюсти широко раскрытыми." },
+            { id: "quietness", name: "Тишина", icon: "🔇", recipe: [["gag", "moans"], ["control", "gag"]], desc: "В комнате слышен только звон цепей, свист плети и твое тяжелое, прерывистое дыхание." },
+            { id: "negative_chastity", name: "Отрицательный пояс", icon: "📉", recipe: [["chastity_belt", "metal", "sub"]], desc: "Экстремальный контроль. Клетка, вдавливающая гениталии внутрь, причиняя боль при малейшем возбуждении." },
+            { id: "electro_chastity", name: "Электро-пояс", icon: "⚡", recipe: [["chastity_belt", "electricity", "metal"]], desc: "Устройство с электродами. Возбуждение наказывается автоматическим разрядом тока." },
+            { id: "spiked_chastity", name: "Пояс с шипами", icon: "🦔", recipe: [["metal_chastity", "strictness", "pain"]], desc: "Внутренняя сторона усеяна шипами. Любое шевеление или эрекция приводят к кровопролитию." },
+            { id: "docility", name: "Покорность", icon: "🙇", recipe: [["vibrator", "sub", "orgasm"], ["torture", "control"]], desc: "Отсутствие сопротивления. Ты покорно принимаешь всё: от нежной ласки до жестокого удара." },
+            { id: "orgasm_torture", name: "Пытка оргазмом", icon: "🌋", recipe: [["vibrator", "torture", "orgasm"]], desc: "Непрерывная стимуляция уже после оргазма. Чувствительность настолько высока, что прикосновение вызывает крик." },
+            { id: "electro_stimulator", name: "Электростимулятор", icon: "🔋", recipe: [["vibrator", "electricity", "pain"]], desc: "Коробочка с проводами (TENS). Превращает электрические импульсы в управляемую, ритмичную агонию." },
+            { id: "deprivation_chamber", name: "Камера депривации", icon: "📦", recipe: [["vibrator", "hitech_suit", "sub", "strictness"], ["imprisonment", "quietness"]], desc: "Закрытый ящик без света и звуков. Мозг начинает генерировать галлюцинации от недостатка сенсорной информации." },
+            { id: "punishment", name: "Наказание", icon: "⚖️", recipe: [["vibrator", "orgasm", "strictness"], ["torture", "chastity_belt"], ["ruined_orgasm", "sub"], ["spanking", "sub"]], desc: "Закономерный итог непослушания. Боль, которая вправляет мозги и возвращает саба на его место." },
+            { id: "vibro_strapon", name: "Вибрострапон", icon: "🍆⚡", recipe: [["vibrator", "strap_on"], ["bdsm_strict", "vibrator"]], desc: "Беспощадное орудие. Проникновение сопровождается мощной вибрацией, сводящей с ума." },
+            { id: "orgasm_denial", name: "Запрет оргазма", icon: "🚫", recipe: [["strictness", "orgasm_control", "bdsm_default"], ["control", "seed"]], desc: "Отказ в разрядке на долгие недели. Накопленное напряжение сводит с ума, превращая в послушного раба." },
+            { id: "latex_encasement", name: "Заключение в латекс", icon: "🕴️", recipe: [["strictness", "latex", "sub"]], desc: "Упаковка тела в герметичный резиновый мешок. Ощущение сдавленности и беспомощности." },
+            { id: "burning_pain", name: "Жгучая боль", icon: "☄️", recipe: [["crop", "spanking", "latex_encasement", "sub"]], desc: "Ощущение, словно к коже приложили раскаленное железо. Боль, выжигающая все мысли." },
+            { id: "electro_shocker", name: "Электрошокер", icon: "⚡🦯", recipe: [["crop", "electricity"]], desc: "Контактное оружие. Разряд в бедро заставляет вскрикнуть и резко дернуться в путах." },
+            { id: "bdsm_session", name: "БДСМ Сессия", icon: "🎬", recipe: [["torture", "sub", "bdsm_default"], ["bdsm_room", "bdsm_default", "sub"]], desc: "Время, когда внешний мир перестает существовать. Есть только комната, игрушки и правила." },
+            { id: "moans", name: "Стоны", icon: "😫", recipe: [["torture", "sub"], ["torture", "pain"]], desc: "Глубокие, гортанные звуки, вырывающиеся из груди против воли от смеси боли и удовольствия." },
+            { id: "mouth_gag", name: "Расширитель для рта", icon: "😬", recipe: [["torture", "gag"]], desc: "Металлический или силиконовый каркас. Не дает закрыть челюсть, оставляя рот открытым для любых действий." },
+            { id: "temptation", name: "Искушение", icon: "🍎", recipe: [["torture", "pleasure", "bdsm_default"]], desc: "Проверка на прочность. Она дразнит тебя оргазмом, проверяя, сорвешься ли ты без разрешения." },
+            { id: "prostate_orgasm", name: "Оргазм простаты", icon: "🎯", recipe: [["torture", "vibrating_plug", "sub"]], desc: "Глубокая, выносящая мозг разрядка без прикосновений к члену. Ощущается как взрыв внутри." },
+            { id: "cunnilingus", name: "Куни", icon: "👅", recipe: [["torture", "bdsm_default", "drool"], ["obedience", "tongue", "bdsm_default"]], desc: "Служение Госпоже. Твое лицо между её бедер — это твое законное и единственное место." },
+            { id: "enema", name: "Клизма", icon: "💉", recipe: [["torture", "plastic_plug", "water", "sub", "upbringing"]], desc: "Медицинская процедура очищения. Унизительная подготовка к глубокому анальному проникновению." },
+            { id: "spit_in_mouth", name: "Плевки в рот", icon: "👄", recipe: [["torture", "spit", "bdsm_default"], ["spit", "drool"]], desc: "Она сплевывает прямо тебе на язык. Ты глотаешь и шепчешь «спасибо»." },
+            { id: "loss_of_control", name: "Потеря контроля", icon: "🎢", recipe: [["torture", "temptation"], ["remote_vibrator", "orgasm"]], desc: "Инстинкты берут верх над разумом. Тело само двигается навстречу руке, причиняющей боль." },
+            { id: "breath_deprivation_mask", name: "Маска дых. депривации", icon: "🤿", recipe: [["torture", "breath_control", "latex"]], desc: "Противогаз, в котором воздух подается только по Её желанию порциями. Вызывает дикую панику и возбуждение." },
+            { id: "mockery", name: "Насмешка", icon: "🤡", recipe: [["ruined_orgasm", "tears", "bdsm_default"]], desc: "Она смеется над твоей слабостью, стоя над тобой, пока ты жалко скулишь от нехватки разрядки." },
+            { id: "latex_doll", name: "Латексная кукла", icon: "🎎", recipe: [["ruined_orgasm", "punishment", "latex_encasement"]], desc: "Превращение в неодушевленный, глянцевый объект. У тебя нет прав, есть только функция." },
+            { id: "slap", name: "Пощёчина", icon: "🤚", recipe: [["ruined_orgasm", "pain"]], desc: "Резкий, хлесткий удар ладонью по лицу. Приводит в чувства и моментально указывает на место." },
+            { id: "under_ai_control", name: "Во власти ИИ", icon: "👁️", recipe: [["control", "robo_session", "bdsm_default"]], desc: "Твои наказания генерирует бездушная машина. Никакой эмпатии, только алгоритмы боли." },
+            { id: "female_orgasm", name: "Оргазм по женски", icon: "🌺", recipe: [["control", "prostate_fluid"]], desc: "Многократные волны содроганий, достигаемые исключительно через стимуляцию простаты." },
+            { id: "slavery_contract", name: "Контракт на рабство", icon: "📜", recipe: [["control", "plaything"]], desc: "Бумага, подписанная кровью. Добровольный отказ от своей воли в пользу Хозяйки 24/7." },
+            { id: "anal_prep", name: "Подготовка к аналу", icon: "🧼", recipe: [["control", "enema"]], desc: "Абсолютная чистота и растяжение. Долгая процедура перед тем, как она вставит свой страпон." },
+            { id: "deep_penetration", name: "Глубокое проникновение", icon: "🕳️", recipe: [["drool", "tongue"]], desc: "Удар в самое основание. Заставляет закатывать глаза и сбивает дыхание." },
+            { id: "sweet_kiss", name: "Сладкий поцелуй", icon: "🍬", recipe: [["drool", "tenderness"]], desc: "Редкое, искреннее проявление мягкости. Награда, ради которой стоит терпеть любые порки." },
+            { id: "drool_chamber", name: "Камера со слюнями", icon: "🧪", recipe: [["drool", "deprivation_chamber"]], desc: "Влажно, темно и унизительно. Завязанный рот и невозможность сглотнуть." },
+            { id: "phallus_mask", name: "Маска с фалосом", icon: "🎭", recipe: [["orgasm_control", "sub", "gag"]], desc: "Кожаная маска со встроенным дилдо. Превращает твое лицо в игрушку для её подруг." },
+            { id: "regime_orgasm", name: "Режимный оргазм", icon: "⏱️", recipe: [["orgasm_control", "milking"]], desc: "Дойка строго по расписанию. Никакой страсти, только физиологическое опустошение." },
+            { id: "disobedience_penalty", name: "Штраф", icon: "📝", recipe: [["orgasm_control", "tears"]], desc: "Дополнительный месяц в клетке или сто ударов плетью за то, что посмел поднять глаза без разрешения." },
+            { id: "mouth_lock_mask", name: "Маска с замком", icon: "🤐🔒", recipe: [["moans", "quietness", "leather"], ["moans", "silence", "leather"]], desc: "Тяжелый шлем, губы заперты на висячий замок. Молчание на долгие дни." },
+            { id: "loud_scream", name: "Громкий крик", icon: "🗣️", recipe: [["moans", "pain"], ["whimper", "spanking"]], desc: "Первобытный вопль, срывающий связки, когда плеть рассекает кожу слишком глубоко." },
+            { id: "ecstasy", name: "Экстаз", icon: "✨", recipe: [["moans", "orgasm"], ["quietness", "pleasure"]], desc: "Слепящая белая вспышка в мозгу. Граница, где боль перестает быть болью и становится чистым светом." },
+            { id: "mooing", name: "Мычание", icon: "🐮", recipe: [["moans", "plastic_gag"]], desc: "Жалкие звуки, которые ты издаешь, пытаясь закричать сквозь плотно затянутый кляп-яблоко." },
+            { id: "pleading", name: "Мольба", icon: "🥺", recipe: [["moans", "humiliation"]], desc: "Ползать в ногах, целуя сапоги и захлебываясь слезами, вымаливая прощение." },
+            { id: "whimper", name: "Скулеж", icon: "🐕", recipe: [["moans", "spanking"]], desc: "Жалобные собачьи звуки, когда удар приходится прямо по уже оставленному синяку." },
+            { id: "shy_whisper", name: "Стыдливый шепот", icon: "🤫", recipe: [["moans", "embarrassment"]], desc: "Тихое признание своей испорченности. «Да, Госпожа, мне нравится, когда вы делаете мне больно»." },
+            { id: "rapture", name: "Упоение", icon: "😵‍💫", recipe: [["moans", "sadism"]], desc: "Её блаженная улыбка, когда она видит, как ты корчишься в путах." },
+            { id: "sweet_pain", name: "Сладкая боль", icon: "🩹", recipe: [["moans", "masochism"]], desc: "Ощущение, когда жжение на коже вызывает прилив тепла внизу живота и дрожь в коленях." },
+            { id: "echo", name: "Эхо", icon: "🕳️", recipe: [["moans", "deprivation_chamber"]], desc: "Твои крики отражаются от глухих стен камеры. Никто не придет на помощь. Ты только Её." },
+            { id: "sensory_deprivation", name: "Сенсорная депривация", icon: "🌑", recipe: [["quietness", "blindfold", "leather"]], desc: "Полное отключение от мира. Ты не знаешь, ни который час, ни в какой части комнаты она стоит." },
+            { id: "mindfuck", name: "Майндфак", icon: "🤯🧠", recipe: [["quietness", "deprivation_chamber", "orgasm"]], desc: "Игры с разумом. Полное разрушение твоей картины мира и логики." },
+            { id: "nice_shower", name: "Приятный душ", icon: "🚿", recipe: [["water", "tenderness"]], desc: "Мягкие, теплые струи смывают пот и кровь. Она сама моет тебя мочалкой, как ребенка." },
+            { id: "developed_boy", name: "Разработанный мальчик", icon: "🍑✨", recipe: [["plastic_plug", "sub"], ["anal_prep", "plastic_plug"]], desc: "Дырочка, способная принять любой размер игрушки без подготовки. Идеально натренированное тело." },
+            { id: "switch", name: "Свитч", icon: "🔄", recipe: [["sadism", "masochism"]], desc: "Универсал. Тот, кто может с одинаковым наслаждением держать плеть и быть привязанным к дыбе." },
+            { id: "long_abstinence", name: "Долгое воздержание", icon: "⏳", recipe: [["orgasm_refusal", "locktober"]], desc: "Месяцы без снятия клетки. Яйца тяжелеют, рассудок мутнеет, единственная мысль — о разрядке." },
+            { id: "shame", name: "Стыд", icon: "🫣", recipe: [["embarrassment", "humiliation"]], desc: "Гореть со стыда, стоя голым на четвереньках перед её гостями с раздвинутыми ногами." },
+            { id: "euphoria", name: "Эйфория", icon: "🌈", recipe: [["loss_of_control", "sweet_pain"], ["nervous_tremor", "orgasm"]], desc: "Химический коктейль из адреналина и эндорфинов, превращающий пыточную в рай." },
+            { id: "subspace", name: "Саб-спейс", icon: "🌌", recipe: [["tears", "sweet_pain"], ["euphoria", "loss_of_control"]], desc: "Особое состояние транса. Боль уходит на задний план, мысли затихают, остается только чувство полета." },
+            { id: "water_torture", name: "Пытка водой", icon: "🌊", recipe: [["water", "pain", "lack_of_breath"]], desc: "Уотербординг или принудительное заливание жидкости. Задыхаться и глотать одновременно." },
+            { id: "deep_cleaning", name: "Глубокая очистка", icon: "🧼✨", recipe: [["lube", "enema"]], desc: "Медицински тщательная подготовка нутра к самым грязным и глубоким проникновениям." },
+            { id: "nervous_tremor", name: "Нервная дрожь", icon: "🫨", recipe: [["hypersensitivity", "electricity"]], desc: "Тело бьет крупной дрожью после снятия электродов. Мышцы сокращаются сами по себе." },
+            { id: "cognitive_dissonance", name: "Когнитивный диссонанс", icon: "😵‍💫", recipe: [["mindfuck", "pleasure"]], desc: "Мозг кричит «Опасность!», но тело предательски выделяет смазку и просит еще." },
+            { id: "false_reality", name: "Ложная реальность", icon: "🕶️", recipe: [["mindfuck", "under_ai_control"]], desc: "Тебе внушили, что ты больше не человек. И ты искренне поверил в эту новую роль." },
+            { id: "rebirth", name: "Перерождение", icon: "🐣", recipe: [["mindfuck", "catharsis", "euphoria"]], desc: "Пройти через ад садизма, чтобы переродиться в совершенно новое, очищенное от комплексов существо." },
+            { id: "sensory_overload", name: "Сенсорная перегрузка", icon: "🎆", recipe: [["hypersensitivity", "nervous_tremor", "electric_torture", "deprivation_chamber", "orgasm_denial"]], desc: "Слишком много боли, света, звука и оргазмов одновременно. Короткое замыкание в мозгу." },
+            { id: "pet", name: "Питомец", icon: "🐾", recipe: [["docility", "collar"], ["obedient_boy", "collar", "leash"]], desc: "Ты спишь в лежанке, ешь из миски на полу и приносишь в зубах тапочки. Петплей в чистом виде." },
 
-            { id: "sweet_tears", name: "Сладкие слёзы", icon: "🥲", recipe: [["pain", "tears", "pleasure"]], desc: "Слезы текут по щекам не от горя, а от переизбытка эндорфинов, вызванных умелой, заботливой поркой." },
+            { id: "sweet_tears", name: "Сладкие слёзы", icon: "🥲", recipe: [["pain", "tears", "pleasure"]], desc: "Слезы текут по щекам не от горя, а от переизбытка эндорфинов, вызванных умелой поркой." },
             { id: "choking_moan", name: "Задыхающийся стон", icon: "😫💦", recipe: [["gag", "vibrator", "pain"]], desc: "Тщетная попытка закричать сквозь кляп. Звук разбивается о резину, превращаясь в сдавленное мычание." },
             { id: "heavy_gear", name: "Тяжелая экипировка", icon: "🪖", recipe: [["latex", "leather", "metal"]], desc: "Глухой многослойный бондаж. Ремни врезаются в тело, металл тянет вниз, латекс заставляет потеть." },
             { id: "shock_therapy", name: "Шоковая терапия", icon: "⚡🔌", recipe: [["electricity", "water", "metal_plug"]], desc: "Пропускание электрических импульсов через влажную среду. Удары тока прошивают тело до самых костей." },
@@ -534,8 +642,6 @@
             { id: "cramped_muscles", name: "Сведенные мышцы", icon: "🦵", recipe: [["orgasm_torture", "edging", "vibrator"]], desc: "Тело сводит судорогой от многочасового перенапряжения и невозможности разрядиться." },
             { id: "pain_arsenal", name: "Арсенал боли", icon: "⚔️", recipe: [["crop", "whip", "birch"]], desc: "Набор для флагелляции. От легкого разогрева стеком до прорубающих кожу ударов тяжелой плетью." },
             { id: "base_materials", name: "Базовые материалы", icon: "📦", recipe: [["metal", "leather", "plastic"]], desc: "Сырье для создания самых извращенных инструментов. Кожа, резина и сталь." },
-
-            // Недостающие из списка
             { id: "silent_plea", name: "Немая мольба", icon: "🙊", recipe: [["mouth_lock_mask", "whimper", "tears", "pain"]], desc: "Глаза полны слез, тело дрожит, но из-за замка на маске ты не можешь произнести ни звука, лишь умоляешь взглядом." },
             { id: "blind_and_mute", name: "Слепой и немой", icon: "🫥", recipe: [["mouth_lock_mask", "blindfold", "sensory_deprivation", "punishment", "collar"]], desc: "Полное отключение от внешнего мира. Лишенный глаз и голоса, ты превращаешься в живую игрушку." },
             { id: "panic", name: "Паника", icon: "🙀", recipe: [["water_torture", "lack_of_breath"]], desc: "Животный, первобытный страх. Когда контроль дыхания заходит слишком далеко, и тело начинает биться в конвульсиях." },
@@ -564,7 +670,20 @@
             { id: "ouch", name: "Ауч!", icon: "🤕", recipe: [["sub", "pain"]], desc: "Первая резкая реакция на удар. Еще не привыкание, но уже четкое понимание того, что шутки кончились." },
             { id: "ah_stop", name: "Ааа! Хватит...", icon: "😫", recipe: [["sub", "pain", "pain"]], desc: "Мольбы об остановке, когда боль начинает накапливаться. Но стоп-слово еще не произнесено." },
             { id: "cant_take_it", name: "Я больше...", icon: "😭", recipe: [["sub", "pain", "pain", "pain"]], desc: "Слезы текут ручьем, голос срывается. Тело извивается в путах, пытаясь уйти от очередного удара." },
-            { id: "loss_of_consciousness", name: "Потеря сознания", icon: "😵", recipe: [["sub", "pain", "pain", "pain", "pain"], ["pain_threshold", "exceeding_pain_threshold"]], desc: "Перегрузка рецепторов. Предохранитель в мозгу перегорает, и организм отключается, погружаясь в спасительную тьму." }
+            { id: "loss_of_consciousness", name: "Потеря сознания", icon: "😵", recipe: [["sub", "pain", "pain", "pain", "pain"], ["pain_threshold", "exceeding_pain_threshold"]], desc: "Перегрузка рецепторов. Предохранитель в мозгу перегорает, и организм отключается, погружаясь в спасительную тьму." },
+            { id: "nice_shower", name: "Приятный душ", icon: "🚿", recipe: [["water", "tenderness"]], desc: "Мягкие, теплые струи смывают пот и кровь. Она сама моет тебя мочалкой, как ребенка." },
+            { id: "developed_boy", name: "Разработанный мальчик", icon: "🍑✨", recipe: [["plastic_plug", "sub"], ["anal_prep", "plastic_plug"]], desc: "Дырочка, способная принять любой размер игрушки без подготовки. Идеально натренированное тело." },
+            { id: "switch", name: "Свитч", icon: "🔄", recipe: [["sadism", "masochism"]], desc: "Универсал. Тот, кто может с одинаковым наслаждением держать плеть и быть привязанным к дыбе." },
+            { id: "euphoria", name: "Эйфория", icon: "🌈", recipe: [["loss_of_control", "sweet_pain"], ["nervous_tremor", "orgasm"]], desc: "Химический коктейль из адреналина и эндорфинов, превращающий пыточную в рай." },
+            { id: "subspace", name: "Саб-спейс", icon: "🌌", recipe: [["tears", "sweet_pain"], ["euphoria", "loss_of_control"]], desc: "Особое состояние транса. Боль уходит на задний план, мысли затихают, остается только чувство полета." },
+            { id: "water_torture", name: "Пытка водой", icon: "🌊", recipe: [["water", "pain", "lack_of_breath"]], desc: "Уотербординг или принудительное заливание жидкости. Задыхаться и глотать одновременно." },
+            { id: "deep_cleaning", name: "Глубокая очистка", icon: "🧼✨", recipe: [["lube", "enema"]], desc: "Медицински тщательная подготовка нутра к самым грязным и глубоким проникновениям." },
+            { id: "nervous_tremor", name: "Нервная дрожь", icon: "🫨", recipe: [["hypersensitivity", "electricity"]], desc: "Тело бьет крупной дрожью после снятия электродов. Мышцы сокращаются сами по себе." },
+            { id: "cognitive_dissonance", name: "Когнитивный диссонанс", icon: "😵‍💫", recipe: [["mindfuck", "pleasure"]], desc: "Мозг кричит «Опасность!», но тело предательски выделяет смазку и просит еще." },
+            { id: "false_reality", name: "Ложная реальность", icon: "🕶️", recipe: [["mindfuck", "under_ai_control"]], desc: "Тебе внушили, что ты больше не человек. И ты искренне поверил в эту новую роль." },
+            { id: "rebirth", name: "Перерождение", icon: "🐣", recipe: [["mindfuck", "catharsis", "euphoria"]], desc: "Пройти через ад садизма, чтобы переродиться в совершенно новое, очищенное от комплексов существо." },
+            { id: "sensory_overload", name: "Сенсорная перегрузка", icon: "🎆", recipe: [["hypersensitivity", "nervous_tremor", "electric_torture", "deprivation_chamber", "orgasm_denial"]], desc: "Слишком много боли, света, звука и оргазмов одновременно. Короткое замыкание в мозгу." },
+            { id: "pet", name: "Питомец", icon: "🐾", recipe: [["docility", "collar"], ["obedient_boy", "collar", "leash"]], desc: "Ты спишь в лежанке, ешь из миски на полу и приносишь в зубах тапочки. Петплей в чистом виде." }
         ];
 
         const achievementsDb = [
@@ -1110,7 +1229,6 @@
             setTimeout(() => t.classList.remove('show'), 3500);
         }
 
-        // --- ОБНОВЛЕННАЯ ЭНЦИКЛОПЕДИЯ С НАВИГАЦИЕЙ ---
         function openCollectionMenu() {
             const list = document.getElementById('list-modal-content');
             document.getElementById('list-modal-title').innerText = "Энциклопедия";
@@ -1188,7 +1306,6 @@
             const quoteEl = document.getElementById('modal-quote');
             if(quoteEl) quoteEl.innerText = `"${quote}"`;
 
-            // Управление кнопками закрытия/навигации
             if (isViewingEncyclopedia) {
                 document.getElementById('modal-nav').style.display = 'flex';
                 document.getElementById('modal-close-btn').style.display = 'none';
@@ -1198,24 +1315,6 @@
             }
             
             setTimeout(() => openModal('epic-modal'), 100);
-        }
-
-        // --- МЕНЮ "БДСМ-ка" (ПОДДЕРЖКА АВТОРА) ---
-        function openSupportMenu() {
-            const list = document.getElementById('list-modal-content');
-            document.getElementById('list-modal-title').innerText = "Поддержать проект";
-            list.className = "modal-scroll-area"; 
-            
-            list.innerHTML = `
-                <div style="text-align: center; padding: 10px; line-height: 1.6;">
-                    <div style="font-size: 50px; margin-bottom: 15px; text-shadow: 0 0 20px var(--accent-glow);">💖</div>
-                    <div style="font-size: 13px; color: #ddd; margin-bottom: 25px; border-left: 2px solid var(--accent-neon); padding: 10px; background: rgba(0,0,0,0.4); text-align: left;">
-                        Если тебе понравилась игра и хочешь меня поддержать, или у тебя есть классные идеи для новых элементов и рецептов — обязательно пиши мне!
-                    </div>
-                    <button class="close-modal-btn" style="background: #ffaa00; width: 100%; box-shadow: 0 0 20px rgba(255,170,0,0.5); font-size: 15px; padding: 15px; color: #000;" onclick="window.open('https://boosty.to/bdsmka', '_blank')">Задонатить на Бусти</button>
-                </div>
-            `;
-            openModal('list-modal');
         }
 
         function openAchievementsMenu() {
@@ -1311,6 +1410,17 @@
                         ${isUnlocked && !isActive ? `<button class="close-modal-btn" style="margin:0; padding: 4px 10px; font-size:10px; background:var(--rare-color);" onclick="selectBackground('${bg.id}')">Применить</button>` : ''}
                     </div>`;
             });
+
+            html += `<div class="settings-section-title" style="margin-top:20px;">Поддержать автора</div>`;
+            html += `
+            <div style="background: rgba(255,170,0,0.1); border: 1px solid var(--legendary-color); border-radius: 8px; padding: 15px; text-align: center; margin-bottom: 20px;">
+                <div style="font-size: 30px; margin-bottom: 10px;">💖</div>
+                <div style="font-size: 11px; color: #ddd; margin-bottom: 15px; line-height: 1.4;">
+                    Если тебе понравилась игра и хочешь меня поддержать, или у тебя есть идеи для новых рецептов и элементов — пиши мне!
+                </div>
+                <button class="close-modal-btn" style="background: #ffaa00; width: 100%; box-shadow: 0 0 15px rgba(255,170,0,0.4); font-size: 13px; padding: 12px; color: #000; margin: 0;" onclick="window.open('https://boosty.to/bdsmka', '_blank')">Задонатить на Бусти</button>
+            </div>
+            `;
 
             list.innerHTML = html;
             openModal('list-modal');
