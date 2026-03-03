@@ -159,13 +159,8 @@
         .inv-name { font-size: 9px; color: var(--text-main); text-align: center; word-break: break-word; position: relative; z-index: 2; line-height: 1.1;}
 
         .inv-item.final-item { background: rgba(255, 255, 255, 0.05); border-color: #4a4a4a; box-shadow: inset 0 0 15px rgba(255,255,255,0.02); }
-        
-        /* Исчерпанные предметы (те, с которыми открыты все рецепты) */
         .inv-item.exhausted-item { filter: grayscale(80%); opacity: 0.6; }
-        .inv-item.exhausted-item::after {
-            content: '✓'; position: absolute; top: 4px; right: 6px;
-            color: #00ff00; font-size: 12px; text-shadow: 0 0 3px #000; font-weight: bold;
-        }
+        .inv-item.exhausted-item::after { content: '✓'; position: absolute; top: 4px; right: 6px; color: #00ff00; font-size: 12px; text-shadow: 0 0 3px #000; font-weight: bold; }
 
         .rarity-0 { border-color: #444; }
         .rarity-2 { border-color: var(--rare-color); box-shadow: inset 0 0 8px rgba(0, 229, 255, 0.1); }
@@ -311,9 +306,7 @@
     <script>
         const tg = window.Telegram.WebApp;
         tg.expand();
-        const API_URL = 'http://127.0.0.1:8080/api'; 
-        const userId = tg.initDataUnsafe?.user?.id || 1; 
-
+        
         let allItems = [];
         let unlockedItemIds = [];
         let unlockedAchievements = [];
@@ -333,7 +326,6 @@
         let idleTimer = null;
         let bubbleTimer = null;
 
-        // Фоны меню
         const backgroundsDb = [
             { id: "theme-default", name: "Базовый Скан", icon: "🌐", req: 0, desc: "Доступно изначально." },
             { id: "theme-matrix", name: "Матрица Подчинения", icon: "🟩", req: 15, desc: "Открывается при 15 элементах." },
@@ -534,7 +526,8 @@
             { id: "false_reality", name: "Ложная реальность", icon: "🕶️", recipe: [["mindfuck", "under_ai_control"]] },
             { id: "rebirth", name: "Перерождение", icon: "🐣", recipe: [["mindfuck", "catharsis", "euphoria"]] },
             { id: "sensory_overload", name: "Сенсорная перегрузка", icon: "🎆", recipe: [["hypersensitivity", "nervous_tremor", "electric_torture", "deprivation_chamber", "orgasm_denial"]] },
-            { id: "pet", name: "Питомец", icon: "🐾", recipe: [["docility", "collar"], ["obedient_boy", "collar", "leash"]] }
+            { id: "pet", name: "Питомец", icon: "🐾", recipe: [["docility", "collar"], ["obedient_boy", "collar", "leash"]] },
+            { id: "crop", name: "Стек", icon: "🦯", recipe: [["plastic", "pain"]] } // Восстановлено из промта
         ];
 
         extraNames.forEach(item => {
@@ -554,17 +547,59 @@
 
         async function initGame() {
             allItems = defaultItems;
-            loadProgress();
 
-            // Вычисляем редкость
+            const allIngredients = new Set();
+            allItems.forEach(item => {
+                if(item.recipe) item.recipe.forEach(rec => rec.forEach(id => allIngredients.add(id)));
+            });
+
             allItems = allItems.map(item => {
                 let r = 0;
                 if (item.type === 'mistress') r = 'mistress';
                 else if (!item.recipe || item.recipe.length === 0) r = 0;
                 else r = Math.min(...item.recipe.map(rec => rec.length));
-                return { ...item, rarity: r };
+                
+                const isFinal = !allIngredients.has(item.id) && item.type !== 'mistress';
+                return { ...item, rarity: r, isFinal: isFinal };
             });
 
+            loadProgressFromCloud();
+        }
+
+        // Загрузка через Cloud Storage с безопасным fallback'ом
+        function loadProgressFromCloud() {
+            // Сначала загружаем из localStorage на случай если облако не ответит
+            loadProgress();
+            
+            try {
+                if (tg.isVersionAtLeast && tg.isVersionAtLeast('6.9') && tg.CloudStorage) {
+                    tg.CloudStorage.getKeys((err, keys) => {
+                        if (!err && keys && keys.includes('game_data')) {
+                            tg.CloudStorage.getItem('game_data', (err, value) => {
+                                if (!err && value) {
+                                    const data = JSON.parse(value);
+                                    unlockedItemIds = data.unlockedItemIds || unlockedItemIds;
+                                    unlockedAchievements = data.unlockedAchievements || unlockedAchievements;
+                                    settings = { ...settings, ...(data.settings || {}) };
+                                    finishInit();
+                                } else {
+                                    finishInit();
+                                }
+                            });
+                        } else {
+                            finishInit();
+                        }
+                    });
+                } else {
+                    finishInit();
+                }
+            } catch (e) {
+                console.warn("CloudStorage не поддерживается, используем localStorage", e);
+                finishInit();
+            }
+        }
+
+        function finishInit() {
             if (unlockedItemIds.length === 0) {
                 unlockedItemIds = allItems.filter(i => (!i.recipe || i.recipe.length === 0) && i.type !== 'mistress').map(i => i.id);
                 unlockedItemIds.push("bdsm_default");
@@ -596,6 +631,20 @@
             localStorage.setItem('unlockedIds', JSON.stringify(unlockedItemIds));
             localStorage.setItem('achievements', JSON.stringify(unlockedAchievements));
             localStorage.setItem('settings', JSON.stringify(settings));
+            
+            const dataToSave = JSON.stringify({
+                unlockedItemIds: unlockedItemIds,
+                unlockedAchievements: unlockedAchievements,
+                settings: settings
+            });
+            
+            try {
+                if (tg.isVersionAtLeast && tg.isVersionAtLeast('6.9') && tg.CloudStorage) {
+                    tg.CloudStorage.setItem('game_data', dataToSave);
+                }
+            } catch (e) {
+                console.warn("CloudStorage недоступно, сохранено только в localStorage", e);
+            }
         }
 
         function applySettings() {
@@ -727,7 +776,7 @@
 
                 if (!unlockedItemIds.includes(craftedItem.id)) {
                     unlockedItemIds.push(craftedItem.id);
-                    recalculateExhaustedAndFinal(); // Пересчет исчерпанных элементов!
+                    recalculateExhaustedAndFinal();
                     saveProgress(); renderInventory(); updateProgress(); 
                     
                     checkProgressionUnlocks();
@@ -900,6 +949,7 @@
 
             const activeMistress = allItems.find(i=>i.id===settings.currentMistressId) || allItems.find(i=>i.id==="bdsm_default");
             const quote = item.type === 'mistress' ? (item.desc || "Новая госпожа.") : generateMistressQuote(item, activeMistress.personality);
+
             const quoteEl = document.getElementById('modal-quote');
             if(quoteEl) quoteEl.innerText = `"${quote}"`;
             
